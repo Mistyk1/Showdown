@@ -7,10 +7,10 @@ local mirror = {
 	unlocked = false,
 	unlock_condition = {deck = "b_showdown_Mirror", stake = "stake_showdown_emerald"},
 	loc_vars = function(self)
-		return { key = self.key..(self.get_current_deck_key() == "b_showdown_Mirror" and "_alt" or "") }
-	end,
-	locked_loc_vars = function(self)
-		if not Showdown.config["Stakes"] then return { key = 'sleeve_showdown_deactivated' } end
+		return {
+			key = self.key..(self.get_current_deck_key() == "b_showdown_Mirror" and "_alt" or ""),
+			vars = {colours={}}
+		}
 	end,
 	apply = function(self, sleeve)
         CardSleeves.Sleeve.apply(self)
@@ -28,6 +28,12 @@ local mirror = {
         end
 	end,
 }
+
+if not Showdown.config["Stakes"] then
+	mirror.locked_loc_vars = function(self)
+		return { key = 'sleeve_showdown_deactivated', vars = {colours={}} }
+	end
+end
 
 local calculus = {
 	type = 'Sleeve',
