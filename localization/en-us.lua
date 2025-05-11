@@ -80,7 +80,7 @@ return {
                 name = 'Chess Deck',
                 text = {
                     'Big Blinds are replaced',
-                    'by {C:attention}Chess Binds',
+                    'by {C:attention}Chess Blinds',
                     'Black Chess Blinds have',
                     '{C:attention}positive{} effects',
                     'White Chess Blinds have',
@@ -189,7 +189,7 @@ return {
                 name = "Chess Sleeve",
                 text = {
                     'Big Blinds are replaced',
-                    'by {C:attention}Chess Binds',
+                    'by {C:attention}Chess Blinds',
                     'Black Chess Blinds have',
                     '{C:attention}positive{} effects',
                     'White Chess Blinds have',
