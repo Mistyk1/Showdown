@@ -3345,6 +3345,47 @@ local patchwork_joker = {
     end,
 }
 
+local gummy_worms = {
+    type = 'Joker',
+    order = 95,
+    key = 'gummy_worms',
+    name = 'gummy_worms',
+    atlas = "showdown_jokers",
+    pos = coordinate(100),
+    config = {extra = {x_chips = 2, x_chips_reduction = 0.2}},
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.x_chips, card.ability.extra.x_chips_reduction } }
+	end,
+    rarity = 2, cost = 6,
+    blueprint_compat = false, perishable_compat = false, eternal_compat = false,
+    calculate = function(self, card, context)
+        if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
+            if card.ability.extra.x_chips - card.ability.extra.x_chips_reduction <= 1 then 
+                SMODS.destroy_cards(card, nil, nil, true)
+                return {
+                    card = card,
+                    message = localize('k_eaten_ex'),
+                    colour = G.C.FILTER
+                }
+            else
+                SMODS.scale_card(card, {
+                    ref_table = card.ability.extra,
+                    ref_value = "x_chips",
+                    scalar_value = "x_chips_reduction",
+                    operation = "-",
+                    message_key = 'a_xchips_minus',
+                    colour = G.C.CHIPS
+                })
+            end
+        end
+        if context.joker_main then
+            return {
+                x_chips = card.ability.extra.x_chips
+            }
+        end
+    end,
+}
+
 return {
 	enabled = Showdown.config["Jokers"]["Normal"],
 	list = {
@@ -3424,6 +3465,7 @@ return {
             tooth_decay,
             gamma_pulse,
             patchwork_joker,
+            gummy_worms,
             --- Ranks Jokers
             pinpoint,
             math_teacher,
@@ -3746,6 +3788,8 @@ return {
             table.insert(Cryptid.food, 'j_showdown_parmesan')
             table.insert(Cryptid.food, 'j_showdown_banana')
             table.insert(Cryptid.food, 'j_showdown_cake')
+            table.insert(Cryptid.food, 'j_showdown_mouthwash')
+            table.insert(Cryptid.food, 'j_showdown_gummy_worms')
         end
 	end,
     order = 2,

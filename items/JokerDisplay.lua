@@ -1098,6 +1098,19 @@ table.insert(def_list.jokers, {
     }
 })
 
+table.insert(def_list.jokers, {
+    key = 'gummy_worms',
+    text = {
+        {
+            border_nodes = {
+                { text = "X" },
+                { ref_table = "card.ability.extra", ref_value = "x_chips", retrigger_type = "exp" }
+            },
+            border_colour = G.C.CHIPS,
+        }
+    }
+})
+
 -- Blinds
 -- (Chess blinds are excluded because Blind display is used only for Matador and Matador only works for Boss Blinds)
 

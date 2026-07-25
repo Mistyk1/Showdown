@@ -1767,6 +1767,14 @@ return {
                     '{C:attention}5{} different {C:attention}enhancements',
                 }
             },
+            j_showdown_gummy_worms = {
+                name = 'Gummy Worms',
+                text = {
+                    "{X:chips,C:white}X#1#{} Chips,",
+                    "loses {X:chips,C:white}X#2#{} Chips",
+                    "at end of round",
+                }
+            },
         },
         Other={
             showdown_static = {
