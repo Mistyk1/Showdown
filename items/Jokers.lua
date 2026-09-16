@@ -3382,6 +3382,7 @@ local deviantt = {
         return { vars = { card.ability.extra.x_chips } }
 	end,
     rarity = 4, cost = 10,
+    unlocked = false,
     blueprint_compat = true, perishable_compat = true, eternal_compat = true,
     calculate = function(self, card, context)
         if context.other_joker and (context.other_joker:is_rarity("Legendary") or context.other_joker:is_rarity("showdown_Final")) then
@@ -3416,6 +3417,7 @@ local abominationn = {
         return { vars = { card.ability.extra.blind_requirement_division } }
 	end,
     rarity = 4, cost = 10,
+    unlocked = false,
     blueprint_compat = true, perishable_compat = true, eternal_compat = true,
     calculate = function(self, card, context)
         if context.setting_blind and not (context.blueprint_card or card).getting_sliced then
@@ -3440,13 +3442,30 @@ local mutant = {
     atlas = "showdown_jokers",
     pos = coordinate(105), soul_pos = coordinate(106),
     rarity = 4, cost = 10,
+    unlocked = false,
     blueprint_compat = false, perishable_compat = true, eternal_compat = true,
     add_to_deck = function(self, card, from_debuff)
+        if not G.GAME.mutant_legendary_pool then
+            G.GAME.mutant_legendary_pool = {}
+        end
+        G.GAME.mutant_legendary_pool.rate = 0.1
+        G.GAME.mutant_legendary_pool.in_shop = true
+
         local deviantt, abominationn = find_joker('deviantt'), find_joker('abominationn')
         if next(deviantt) and next(abominationn) then
             check_for_unlock({type = 'fargo_proud'})
         end
     end,
+    remove_from_deck = function(self, card, from_debuff)
+        G.GAME.mutant_legendary_pool.in_shop = false
+    end,
+    load = function(self, card, card_table, other_card)
+        if not G.GAME.mutant_legendary_pool then
+            G.GAME.mutant_legendary_pool = {}
+        end
+        G.GAME.mutant_legendary_pool.rate = 0.1
+        G.GAME.mutant_legendary_pool.in_shop = true
+    end
 }
 
 return {
@@ -3788,6 +3807,18 @@ return {
                 local blinking_blocks = find_joker('blinking_block')
                 if #blinking_blocks > 0 then juice(blinking_blocks) end
             end
+        end
+
+        local poll_obj_ref = SMODS.poll_object
+        function SMODS.poll_object(args) -- Thanks All in Jest
+            if args.type == 'Joker' and args.rarities == nil and G.GAME.mutant_legendary_pool ~= nil and G.GAME.mutant_legendary_pool.in_shop then
+                local p = pseudorandom('rarity'..G.GAME.round_resets.ante..(args.append or ''))
+                --print(p..' '..G.GAME.mutant_legendary_pool.rate)
+                if p < G.GAME.mutant_legendary_pool.rate then
+                    args.rarities = {'Legendary'}
+                end
+            end
+            return poll_obj_ref(args)
         end
 
         Showdown.tag_related_joker['j_diet_cola'] = true

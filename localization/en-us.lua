@@ -1782,7 +1782,7 @@ return {
                     'each gives {X:chips,C:white}X#1#{} Chips',
                 },
                 unlock = {
-                    'idk',
+                    '{E:1,s:1.3}?????'
                 }
             },
             j_showdown_abominationn = {
@@ -1793,7 +1793,7 @@ return {
                     'start of the round',
                 },
                 unlock = {
-                    'idk',
+                    '{E:1,s:1.3}?????'
                 }
             },
             j_showdown_mutant = {
@@ -1803,7 +1803,7 @@ return {
                     'appear in {C:attention}shop{} and {C:attention}boosters',
                 },
                 unlock = {
-                    'idk',
+                    '{E:1,s:1.3}?????'
                 }
             },
         },

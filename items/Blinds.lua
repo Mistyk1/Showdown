@@ -642,7 +642,7 @@ return {
 			in_pool = function (self)
 				return not G.GAME.showdown_chess
 			end
-		})
+		}, true)
 
 		G.FUNCS.reroll_big = function(e)
 			stop_use()
