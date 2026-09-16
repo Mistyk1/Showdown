@@ -120,6 +120,42 @@ return {
 			atlas = "showdown_stakes", sticker_atlas = "showdown_stake_stickers",
         }
 
+		function Showdown.get_deck_win_stake_alt(_deck_key)
+			if not _deck_key then
+				local _stake, _stake_low = nil, nil
+				local deck_count = 0
+				for _, deck in pairs(G.PROFILES[G.SETTINGS.profile].deck_usage) do
+					local deck_won_with = false
+					for key, stake in pairs(G.P_STAKES) do
+						if (deck.wins_by_key or {})[key] then
+							deck_won_with = true
+							if (stake.stake_level or 0) > (_stake and G.P_STAKES[_stake].stake_level or 0) and stake.alternate then
+								_stake = key
+							end
+						end
+					end
+					if deck_won_with then deck_count = deck_count + 1 end
+					if not _stake_low then _stake_low = _stake end
+					if (_stake and G.P_STAKES[_stake] and G.P_STAKES[_stake].stake_level or 0) < (_stake_low and G.P_STAKES[_stake_low].stake_level or 0) then
+						_stake_low = _stake
+					end
+				end
+				return _stake and G.P_STAKES[_stake].order or 0, (deck_count >= #G.P_CENTER_POOLS.Back and G.P_STAKES[_stake_low].order or 0)
+			end
+			if G.PROFILES[G.SETTINGS.profile].deck_usage[_deck_key] and G.PROFILES[G.SETTINGS.profile].deck_usage[_deck_key].wins_by_key then
+				local _stake = nil
+				for key, stake in pairs(G.P_STAKES) do
+					if G.PROFILES[G.SETTINGS.profile].deck_usage[_deck_key].wins_by_key[key] then
+						if (stake.stake_level or 0) > (_stake and G.P_STAKES[_stake].stake_level or 0) and stake.alternate then
+							_stake = key
+						end
+					end
+				end
+				if _stake then return G.P_STAKES[_stake].order end
+			end
+			return 0
+		end
+
 		function Showdown.get_joker_win_sticker_alt(_center, index)
 			local joker_usage = G.PROFILES[G.SETTINGS.profile].joker_usage[_center.key] or {}
 			if joker_usage.wins then
@@ -144,14 +180,14 @@ return {
 		end
 
 		function Showdown.get_deck_win_sticker_alt(_center)
-			if
-				G.PROFILES[G.SETTINGS.profile].deck_usage[_center.key]
-				and G.PROFILES[G.SETTINGS.profile].deck_usage[_center.key].wins_by_key
-			then
+			if G.PROFILES[G.SETTINGS.profile].deck_usage[_center.key] and
+			G.PROFILES[G.SETTINGS.profile].deck_usage[_center.key].wins_by_key then
 				local _stake = nil
-				for key, _ in pairs(G.PROFILES[G.SETTINGS.profile].deck_usage[_center.key].wins_by_key) do
-					if (G.P_STAKES[key] and G.P_STAKES[key].stake_level or 0) > (_stake and G.P_STAKES[_stake].stake_level or 0) and G.P_STAKES[key].alternate then
-						_stake = key
+				for key, stake in pairs(G.P_STAKES) do
+					if G.PROFILES[G.SETTINGS.profile].deck_usage[_center.key].wins_by_key[key] then
+						if (stake.stake_level or 0) > (_stake and G.P_STAKES[_stake].stake_level or 0) and stake.alternate then
+							_stake = G.sticker_map[key] and key or _stake
+						end
 					end
 				end
 				if _stake then return G.sticker_map[_stake] end

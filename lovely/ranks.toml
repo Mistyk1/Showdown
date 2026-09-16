@@ -47,7 +47,7 @@ end
 [patches.pattern]
 target = "functions/common_events.lua"
 pattern = '''
-if _c.effect == 'Mult Card' then loc_vars = {SMODS.signed(cfg.mult + (specific_vars and specific_vars.bonus_mult or 0))}
+if _c.effect == 'Mult Card' then loc_vars = {SMODS.signed(cfg.mult)}
 '''
 position = "before"
 match_indent = true
@@ -119,11 +119,11 @@ if SMODS.is_zero(self) then return true end
 [[patches]]
 [patches.pattern]
 target = '''=[SMODS _ "src/overrides.lua"]'''
-pattern = '''if rank_tallies[rank_name_mapping[i]] ~= 0 or SMODS.add_to_pool(SMODS.Ranks[rank_name_mapping[i]], {suit=''}) then'''
+pattern = '''if rank_tallies[rank_name_mapping[i]] ~= 0 or SMODS.add_to_pool(SMODS.Ranks[rank_name_mapping[i]], { suit = '' }) then'''
 position = "at"
 match_indent = true
 payload = '''
-if rank_tallies[rank_name_mapping[i]] ~= 0 or (SMODS.add_to_pool(SMODS.Ranks[rank_name_mapping[i]], {suit=''}) and not SMODS.Ranks[rank_name_mapping[i]].secret) then
+if rank_tallies[rank_name_mapping[i]] ~= 0 or (SMODS.add_to_pool(SMODS.Ranks[rank_name_mapping[i]], { suit = '' }) and not SMODS.Ranks[rank_name_mapping[i]].secret) then
 '''
 
 # Secret ranks don't appear in challenges Full Deck tab

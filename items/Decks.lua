@@ -14,7 +14,7 @@ local mirror = {
 	unlocked = false,
 	check_for_unlock = function (self, args)
 		if not Showdown.has_stakes then return end
-		local win_stake = get_deck_win_stake()
+		local win_stake = Showdown.get_deck_win_stake_alt()
 		if args.type == 'win_stake' and win_stake >= Showdown.get_stake_index(self.config.unlock_stake) and win_stake <= Showdown.get_stake_index('stake_showdown_diamond') then
 			unlock_card(self)
 		end
@@ -194,7 +194,7 @@ local engineer = {
 	unlocked = false,
 	check_for_unlock = function (self, args)
 		if not Showdown.has_stakes then return end
-		local win_stake = get_deck_win_stake()
+		local win_stake = Showdown.get_deck_win_stake_alt()
 		if args.type == 'win_stake' and win_stake >= Showdown.get_stake_index(self.config.unlock_stake) and win_stake <= Showdown.get_stake_index('stake_showdown_diamond') then
 			unlock_card(self)
 		end
@@ -220,7 +220,7 @@ local chess = {
 	unlocked = false,
 	check_for_unlock = function (self, args)
 		if not Showdown.has_stakes then return end
-		local win_stake = get_deck_win_stake()
+		local win_stake = Showdown.get_deck_win_stake_alt()
 		if args.type == 'win_stake' and win_stake >= Showdown.get_stake_index(self.config.unlock_stake) and win_stake <= Showdown.get_stake_index('stake_showdown_diamond') then
 			unlock_card(self)
 		end
@@ -247,7 +247,7 @@ local slotted = {
 	unlocked = false,
 	check_for_unlock = function (self, args)
 		if not Showdown.has_stakes then return end
-		local win_stake = get_deck_win_stake()
+		local win_stake = Showdown.get_deck_win_stake_alt()
 		if args.type == 'win_stake' and win_stake >= Showdown.get_stake_index(self.config.unlock_stake) and win_stake <= Showdown.get_stake_index('stake_showdown_diamond') then
 			unlock_card(self)
 		end
@@ -276,7 +276,7 @@ local one_of_a_kind = {
 	unlocked = false,
 	check_for_unlock = function (self, args)
 		if not Showdown.has_stakes then return end
-		local win_stake = get_deck_win_stake()
+		local win_stake = Showdown.get_deck_win_stake_alt()
 		if args.type == 'win_stake' and win_stake >= Showdown.get_stake_index(self.config.unlock_stake) and win_stake <= Showdown.get_stake_index('stake_showdown_diamond') then
 			unlock_card(self)
 		end
@@ -544,13 +544,13 @@ return {
 		end
 		if Showdown.config["Blinds"] then
         	Showdown.versatile['Chess Deck'] = { desc = 'j_showdown_versatile_joker_chess', pos = coordinate(25), blueprint = false, add_to_deck = function(self, card, from_debuff)
-				if G.GAME.blind and G.GAME.blind.name ~= '' and G.GAME.blind.chess_boss and not G.GAME.blind.chess_boss.is_black and not G.GAME.blind.disabled then
+				if G.GAME.blind and G.GAME.blind.name ~= '' and G.GAME.blind.config and G.GAME.blind.config.is_chess_boss and not G.GAME.blind.config.is_black_chess and not G.GAME.blind.disabled then
 					G.GAME.blind:disable()
 					play_sound('timpani')
 					card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('ph_blind_disabled')})
 				end
 			end, calculate = function(self, card, context)
-				if context.setting_blind and not card.getting_sliced and not context.blueprint and context.blind.chess_boss and not context.blind.chess_boss.is_black then
+				if context.setting_blind and not card.getting_sliced and not context.blueprint and context.blind.config and context.blind.config.is_chess_boss and not context.blind.config.is_black_chess then
 					G.E_MANAGER:add_event(Event({func = function()
 						G.E_MANAGER:add_event(Event({func = function()
 							G.GAME.blind:disable()
@@ -566,7 +566,7 @@ return {
 
 		function Showdown.get_stake_index(stake)
 			for i, v in ipairs(G.P_CENTER_POOLS.Stake) do
-				if v.key == stake then return i end
+				if v.key == stake then return v.order end
 			end
 		end
 	end

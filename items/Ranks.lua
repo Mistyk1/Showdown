@@ -173,7 +173,7 @@ local zero = { -- 0 Card (counts as any suit and can't be converted to a wild ca
 	pos = { x = 6 },
 	nominal = 0,
 	next = { 'Ace' },
-	prev = { 'Ace' },
+	prev = { 'Ace', 'King', 'showdown_Lord' },
 	secret = true,
 	suit_map = {
 		Hearts = 0,

@@ -278,7 +278,7 @@ return {
             G.GAME.modifiers.no_interest = true
         end }
         Showdown.versatile['Black Deck'] = { desc = 'j_showdown_versatile_joker_black', pos = coordinate(6), blueprint = true, calculate = function(self, card, context)
-            if context.other_joker and (context.other_joker.config.center.rarity == 1 or context.other_joker.config.center.rarity == 3) and card ~= context.other_joker then
+            if context.other_joker and (context.other_joker:is_rarity("Common") or context.other_joker:is_rarity("Rare")) and card ~= context.other_joker then
                 G.E_MANAGER:add_event(Event({
                     func = function()
                         context.other_joker:juice_up(0.5, 0.5)

@@ -18,107 +18,38 @@ end
 '''
 
 # Alternate between black and white chess blinds, part 1/2
-# Rarity pool for boosted Princess Blind
-# Spawn chess blinds, part 1/6
 [[patches]]
 [patches.pattern]
-target = 'game.lua'
+target = '=[SMODS _ "src/game_objects/blinds.lua"]'
 match_indent = true
-pattern = "self.GAME.round_resets.blind_choices.Boss = get_new_boss()"
+pattern = "if SMODS.optional_features.object_weights then"
 position = 'before'
 payload = '''
 G.GAME.is_black_chess = math.random(0, 1) == 1
-G.GAME.princess_blind_rarity_pool = {}
-for _, v in pairs(SMODS.Rarity.obj_buffer) do
-    local in_pool = true
-    for _, w in ipairs(Showdown.princess_blind_rarity_blacklist) do
-        in_pool = in_pool and v ~= w
-    end
-    if in_pool then
-        table.insert(G.GAME.princess_blind_rarity_pool, v)
-    end
-end
-G.GAME.princess_blind_rarity = pseudorandom_element(G.GAME.showdown_chess_boosted and G.GAME.princess_blind_rarity_pool or { 'Common', 'Uncommon', 'Rare' }, pseudoseed('princess_blind_rarity'))
-if self.GAME.showdown_chess then self.GAME.round_resets.blind_choices.Big = Showdown.get_new_chess_blind() end
 '''
 
-# Spawn chess blinds, part 2/6
+# Alternate between black and white chess blinds, part 2/2
+# Get new targets for Pawn, Rook, Knight and Princess, part 1/2
 [[patches]]
 [patches.pattern]
-target = 'functions/common_events.lua'
+target = 'functions/state_events.lua'
 match_indent = true
-pattern = "G.GAME.round_resets.blind_choices.Boss = get_new_boss()"
+pattern = '''delay(0.4); SMODS.ante_end = true; ease_ante(1); SMODS.ante_end = nil; delay(0.4); check_for_unlock({type = 'ante_up', ante = G.GAME.round_resets.ante + 1})'''
 position = 'before'
 payload = '''
-if G.GAME.showdown_chess then G.GAME.round_resets.blind_choices.Big = Showdown.get_new_chess_blind() end
+G.GAME.is_black_chess = not G.GAME.is_black_chess
+Showdown.reset_chess_blinds_targets()
 '''
 
-# Spawn chess blinds, part 3/6
+# Get new targets for Pawn, Rook, Knight and Princess, part 2/2
 [[patches]]
 [patches.pattern]
 target = 'game.lua'
 match_indent = true
-pattern = "if v.boss then bosses_used[k] = 0 end"
+pattern = "self.deck:hard_set_T()"
 position = 'after'
 payload = '''
-if v.chess_boss then bosses_used[k] = 0 end
-'''
-
-# Spawn chess blinds, part 4/6
-[[patches]]
-[patches.pattern]
-target = 'blind.lua'
-match_indent = true
-pattern = '''self.triggered = nil'''
-position = 'after'
-payload = '''
-self.chess_blind = self.config.blind.chess_boss and true or nil
-'''
-
-# Spawn chess blinds, part 5/6
-[[patches]]
-[patches.pattern]
-target = 'blind.lua'
-match_indent = true
-pattern = '''elseif self.name == "Big Blind" then'''
-position = 'at'
-payload = '''
-elseif self.name == "Big Blind" or self.chess_blind then
-'''
-
-# Spawn chess blinds, part 6/6
-[[patches]]
-[patches.pattern]
-target = 'functions/state_events.lua'
-match_indent = true
-pattern = '''elseif G.GAME.round_resets.blind == G.P_BLINDS.bl_big then'''
-position = 'at'
-payload = '''
-elseif G.GAME.round_resets.blind == G.P_BLINDS.bl_big or G.GAME.round_resets.blind.chess_boss then
-'''
-
-# Alternate between black and white chess blinds, part 2/2
-# Get random rarity for Princess blind
-[[patches]]
-[patches.pattern]
-target = 'functions/state_events.lua'
-match_indent = true
-pattern = '''delay(0.4); ease_ante(1, true); delay(0.4); check_for_unlock({type = 'ante_up', ante = G.GAME.round_resets.ante + 1})'''
-position = 'before'
-payload = '''
-G.GAME.is_black_chess = not G.GAME.is_black_chess
-G.GAME.princess_blind_rarity = pseudorandom_element(G.GAME.showdown_chess_boosted and G.GAME.princess_blind_rarity_pool or { 'Common', 'Uncommon' }, pseudoseed('princess_blind_rarity'))
-'''
-
-# Chess blinds color
-[[patches]]
-[patches.pattern]
-target = 'functions/common_events.lua'
-match_indent = true
-pattern = "if v.boss.showdown then"
-position = 'at'
-payload = '''
-if not v.chess_boss and v.boss.showdown then
+Showdown.reset_chess_blinds_targets()
 '''
 
 # Emerald Shard

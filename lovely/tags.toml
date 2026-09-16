@@ -19,10 +19,10 @@ elseif _type == 'Tag' or _type == 'Switch' then
 [patches.pattern]
 target = 'functions/common_events.lua'
 match_indent = true
-pattern = '''local blind_sprite = Sprite(0, 0, 0.7,0.7, G.ASSET_ATLAS['tags'], copy_table(config.pos))'''
+pattern = '''local blind_sprite = SMODS.create_sprite(0, 0, 0.7,0.7, 'tags', copy_table(config.pos))'''
 position = 'at'
 payload = '''
-local blind_sprite = Sprite(0, 0, 0.7,0.7, G.ASSET_ATLAS[config.atlas or 'tags'], copy_table(config.pos))
+local blind_sprite = SMODS.create_sprite(0, 0, 0.7,0.7, config.atlas or 'tags', copy_table(config.pos))
 '''
 
 # Money Switch, part 2/2

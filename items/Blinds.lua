@@ -9,9 +9,18 @@ local function chess_blind(obj)
 		atlas = "showdown_blinds",
 		pos = { x = 0, y = obj.order + 5 },
 		boss_colour = {0.8, 0.8, 0.8, 1},
-		chess_boss = { min = obj.chess_boss.min, max = obj.chess_boss.max, is_black = false },
+		big = { min = obj.big.min, max = obj.big.max, allow_duplicates = false },
+		config = { is_chess_boss = true, is_black_chess = false },
 		dollars = 4,
 		mult = 1.5,
+		unskippable = true,
+		in_pool = function (self)
+			return
+				G.GAME.showdown_chess and
+				not G.GAME.is_black_chess and
+				(self.big.min ~= nil and self.big.min >= math.max(1, G.GAME.round_resets.ante) or true) and
+				(self.big.max ~= nil and self.big.max <= math.max(1, G.GAME.round_resets.ante) or true)
+		end
 	}
 	local black_piece = {
 		type = 'Blind',
@@ -21,9 +30,18 @@ local function chess_blind(obj)
 		atlas = "showdown_blinds",
 		pos = { x = 0, y = obj.order + 6 },
 		boss_colour = G.C.BLACK,
-		chess_boss = { min = obj.chess_boss.min, max = obj.chess_boss.max, is_black = true },
+		big = { min = obj.big.min, max = obj.big.max, allow_duplicates = false },
+		config = { is_chess_boss = true, is_black_chess = true },
 		dollars = 4,
 		mult = 1.5,
+		unskippable = true,
+		in_pool = function (self)
+			return
+				G.GAME.showdown_chess and
+				G.GAME.is_black_chess and
+				(self.big.min ~= nil and self.big.min >= math.max(1, G.GAME.round_resets.ante) or true) and
+				(self.big.max ~= nil and self.big.max <= math.max(1, G.GAME.round_resets.ante) or true)
+		end
 	}
 	return white_piece, black_piece
 end
@@ -32,7 +50,7 @@ local white_pawn, black_pawn = chess_blind{
 	order = 1,
 	key = "pawn",
 	name = "Pawn",
-	chess_boss = { min = 1 },
+	big = { min = 1 },
 }
 white_pawn.modify_hand = function(self, cards, poker_hands, text, mult, hand_chips)
 	local eval = evaluate_poker_hand(cards)
@@ -42,7 +60,7 @@ white_pawn.modify_hand = function(self, cards, poker_hands, text, mult, hand_chi
 	return mult, hand_chips, false
 end
 white_pawn.loc_vars = function(self, cards, poker_hands, text, mult, hand_chips) return { vars = {G.GAME.showdown_chess_boosted and 0.25 or 0.5, G.GAME.chess_blinds_hand or ('['..localize('k_poker_hand')..']')} } end
-white_pawn.collection_loc_vars = function(self, cards, poker_hands, text, mult, hand_chips) return { vars = {G.GAME.showdown_chess_boosted and 0.25 or 0.5, G.GAME.chess_blinds_hand or 'Flush'} } end
+white_pawn.collection_loc_vars = function(self, cards, poker_hands, text, mult, hand_chips) return { vars = {G.GAME.showdown_chess_boosted and 0.25 or 0.5, G.GAME.chess_blinds_hand or 'High Card'} } end
 black_pawn.modify_hand = function(self, cards, poker_hands, text, mult, hand_chips)
 	local eval = evaluate_poker_hand(cards)
 	if G.GAME.chess_blinds_hand and next(eval[G.GAME.chess_blinds_hand]) then
@@ -51,13 +69,13 @@ black_pawn.modify_hand = function(self, cards, poker_hands, text, mult, hand_chi
 	return mult, hand_chips, false
 end
 black_pawn.loc_vars = function(self, cards, poker_hands, text, mult, hand_chips) return { vars = {G.GAME.showdown_chess_boosted and 4 or 2, G.GAME.chess_blinds_hand or ('['..localize('k_poker_hand')..']')} } end
-black_pawn.collection_loc_vars = function(self, cards, poker_hands, text, mult, hand_chips) return { vars = {G.GAME.showdown_chess_boosted and 4 or 2, G.GAME.chess_blinds_hand or 'Flush'} } end
+black_pawn.collection_loc_vars = function(self, cards, poker_hands, text, mult, hand_chips) return { vars = {G.GAME.showdown_chess_boosted and 4 or 2, G.GAME.chess_blinds_hand or 'High Card'} } end
 
 local white_rook, black_rook = chess_blind{
 	order = 3,
 	key = "rook",
 	name = "Rook",
-	chess_boss = { min = 1 },
+	big = { min = 1 },
 }
 white_rook.modify_hand = function(self, cards, poker_hands, text, mult, hand_chips)
 	local hasSuit = false
@@ -92,7 +110,7 @@ local white_knight, black_knight = chess_blind{
 	order = 5,
 	key = "knight",
 	name = "Knight",
-	chess_boss = { min = 1 },
+	big = { min = 1 },
 }
 local function get_chess_rank(i) return G and G.GAME and G.GAME.chess_blinds_ranks and SMODS.Ranks[G.GAME.chess_blinds_ranks[i]] end
 white_knight.modify_hand = function(self, cards, poker_hands, text, mult, hand_chips)
@@ -128,7 +146,7 @@ local white_bishop, black_bishop = chess_blind{
 	order = 7,
 	key = "bishop",
 	name = "Bishop",
-	chess_boss = { min = 1 },
+	big = { min = 1 },
 }
 white_bishop.set_blind = function(self)
 	G.GAME.modifiers.discard_cost = (G.GAME.modifiers.discard_cost or 0) + (G.GAME.showdown_chess_boosted and 3 or 2)
@@ -163,7 +181,7 @@ local white_queen, black_queen = chess_blind{
 	order = 9,
 	key = "queen",
 	name = "Queen",
-	chess_boss = { min = 4 },
+	big = { min = 4 },
 }
 white_queen.debuff_hand = function(self, cards, hand, handname, check)
 	local hands = {}
@@ -201,7 +219,7 @@ local white_king, black_king = chess_blind{
 	order = 11,
 	key = "king",
 	name = "King",
-	chess_boss = { min = 4 },
+	big = { min = 4 },
 }
 white_king.set_blind = function(self)
 	G.hand:change_size(-(G.GAME.showdown_chess_boosted and 3 or 2))
@@ -230,7 +248,7 @@ local white_unicorn, black_unicorn = chess_blind{
 	order = 13,
 	key = "unicorn",
 	name = "Unicorn",
-	chess_boss = { min = 2 },
+	big = { min = 2 },
 }
 white_unicorn.calculate = function(self, blind, context)
 	if not G.GAME.blind.disabled and context.before then
@@ -257,7 +275,7 @@ local white_dragon, black_dragon = chess_blind{
 	order = 15,
 	key = "dragon",
 	name = "Dragon",
-	chess_boss = { min = 2 },
+	big = { min = 2 },
 }
 white_dragon.set_blind = function(self)
 	ease_discard(-(G.GAME.showdown_chess_boosted and 2 or 1))
@@ -278,26 +296,28 @@ local white_princess, black_princess = chess_blind{
 	order = 17,
 	key = "princess",
 	name = "Princess",
-	chess_boss = { min = 4 },
+	big = { min = 4 },
 }
 white_princess.defeat = function(self)
 	local eligible_jokers = {}
 	for _, joker in ipairs(G.jokers.cards) do
 		if joker:is_rarity(G.GAME.princess_blind_rarity) then table.insert(eligible_jokers, joker) end
 	end
-	local destroyed_joker = pseudorandom_element(eligible_jokers, pseudoseed('white_princess'))
-	if SMODS.is_eternal(destroyed_joker) then
-		G.E_MANAGER:add_event(Event({func = function()
-			destroyed_joker:juice_up(0.4, 0.4)
-			play_sound('cancel', 0.8+(0.9 + 0.2*math.random())*0.2)
-		return true end }))
-	elseif not destroyed_joker.getting_sliced then
-		destroyed_joker.getting_sliced = true
-		G.GAME.joker_buffer = G.GAME.joker_buffer - 1
-		G.E_MANAGER:add_event(Event({func = function()
-			G.GAME.joker_buffer = 0
-			destroyed_joker:start_dissolve({HEX("57ecab")}, nil, 1.6)
-		return true end }))
+	if #eligible_jokers > 0 then
+		local destroyed_joker = pseudorandom_element(eligible_jokers, pseudoseed('white_princess'))
+		if SMODS.is_eternal(destroyed_joker) then
+			G.E_MANAGER:add_event(Event({func = function()
+				destroyed_joker:juice_up(0.4, 0.4)
+				play_sound('cancel', 0.8+(0.9 + 0.2*math.random())*0.2)
+			return true end }))
+		elseif not destroyed_joker.getting_sliced then
+			destroyed_joker.getting_sliced = true
+			G.GAME.joker_buffer = G.GAME.joker_buffer - 1
+			G.E_MANAGER:add_event(Event({func = function()
+				G.GAME.joker_buffer = 0
+				destroyed_joker:start_dissolve({HEX("57ecab")}, nil, 1.6)
+			return true end }))
+		end
 	end
 end
 white_princess.loc_vars = function(self, cards, poker_hands, text, mult, hand_chips) return { vars = {G.GAME and G.GAME.princess_blind_rarity and localize('k_'..G.GAME.princess_blind_rarity:lower()) or ('['..localize('k_rarity')..']')} } end
@@ -569,76 +589,108 @@ return {
 			G_FUNCS_evaluate_round_ref()
 		end
 
-		function Showdown.get_new_chess_blind()
-			--[[G.GAME.perscribed_chess_bosses = G.GAME.perscribed_chess_bosses or {}
-			if G.GAME.perscribed_chess_bosses and G.GAME.perscribed_chess_bosses[G.GAME.round_resets.ante] then
-				local ret_boss = G.GAME.perscribed_chess_bosses[G.GAME.round_resets.ante]
-				G.GAME.perscribed_chess_bosses[G.GAME.round_resets.ante] = nil
-				G.GAME.bosses_used[ret_boss] = G.GAME.bosses_used[ret_boss] + 1
-				return ret_boss
-			end
-			if G.FORCE_CHESS then return G.FORCE_CHESS end]]--
-			
-			local eligible_bosses = {}
-			for k, v in pairs(G.P_BLINDS) do
-				if
-					not v.chess_boss
-					or v.chess_boss and (
-						(v.chess_boss.is_black and not G.GAME.is_black_chess)
-						or (not v.chess_boss.is_black and G.GAME.is_black_chess)
-					)
-				then
-				elseif v.in_pool and type(v.in_pool) == 'function' then
-					local res, options = v:in_pool()
-					if (((G.GAME.round_resets.ante)%G.GAME.win_ante == 0 and G.GAME.round_resets.ante >= 2) == false) or (options or {}).ignore_chess_check then
-						eligible_bosses[k] = res and true or nil
-					end
-				elseif v.chess_boss.min <= math.max(1, G.GAME.round_resets.ante) and ((math.max(1, G.GAME.round_resets.ante))%G.GAME.win_ante ~= 0 or G.GAME.round_resets.ante < 2) then
-					eligible_bosses[k] = true
-				end
-			end
-			for k, _ in pairs(G.GAME.banned_keys) do
-				if eligible_bosses[k] then eligible_bosses[k] = nil end
-			end
-
-			local min_use = 100
-			for k, v in pairs(G.GAME.bosses_used) do
-				if eligible_bosses[k] then
-					eligible_bosses[k] = v
-					if eligible_bosses[k] <= min_use then
-						min_use = eligible_bosses[k]
-					end
-				end
-			end
-			for k, _ in pairs(eligible_bosses) do
-				if eligible_bosses[k] then
-					if eligible_bosses[k] > min_use then
-						eligible_bosses[k] = nil
-					end
-				end
-			end
-			local _, boss = pseudorandom_element(eligible_bosses, pseudoseed('chess_boss'))
-			if not boss then
-				if G.GAME.is_black_chess then boss = 'bl_showdown_black_pawn'
-				else boss = 'bl_showdown_white_pawn' end
-			end
-			G.GAME.bosses_used[boss] = (G.GAME.bosses_used[boss] or 0) + 1
-
+		function Showdown.reset_chess_blinds_targets()
 			local _poker_hands = {}
 			for k, v in pairs(G.GAME.hands) do
-				if v.visible then _poker_hands[#_poker_hands+1] = k end
+				if v.played_this_round > 0 then _poker_hands[#_poker_hands+1] = k end
+			end
+			if #_poker_hands then
+				_poker_hands[1] = "High Card"
 			end
 			G.GAME.chess_blinds_hand = pseudorandom_element(_poker_hands, pseudoseed('chess_blinds_hand'))
 			G.GAME.chess_blinds_suit = pseudorandom_element(get_all_suits(), pseudoseed('chess_blinds_suit'))
 			G.GAME.chess_blinds_ranks = {}
 			local ranks = get_all_ranks()
-			for _ = 0, 3 do
+			for _ = 0, 2 do
 				local rand_rank = pseudorandom_element(ranks, pseudoseed('chess_blinds_ranks'))
 				table.remove(ranks, findInTable(rand_rank, ranks))
 				table.insert(G.GAME.chess_blinds_ranks, rand_rank)
 			end
-			
-			return boss
+			G.GAME.princess_blind_rarity_pool = {}
+			for _, v in pairs(SMODS.Rarity.obj_buffer) do
+				local in_pool = true
+				for _, w in ipairs(Showdown.princess_blind_rarity_blacklist) do
+					in_pool = in_pool and v ~= w
+				end
+				if in_pool then
+					table.insert(G.GAME.princess_blind_rarity_pool, v)
+				end
+			end
+			G.GAME.princess_blind_rarity = pseudorandom_element(G.GAME.showdown_chess_boosted and G.GAME.princess_blind_rarity_pool or { 'Common', 'Uncommon', 'Rare' }, pseudoseed('princess_blind_rarity'))
+		end
+
+		local SMODS_Blind_call = SMODS.Blind.__call
+		function SMODS.Blind:__call(o)
+			if o.big and not (o.config and o.config.is_chess_boss) then
+				if o.in_pool then
+					local old_in_pool = o.in_pool
+					o.in_pool = function (self)
+						return not G.GAME.showdown_chess and old_in_pool(self)
+					end
+				else
+					o.in_pool = function (self)
+						return not G.GAME.showdown_chess --and self.big.min >= math.max(1, G.GAME.round_resets.ante) and self.big.max <= math.max(1, G.GAME.round_resets.ante)
+					end
+				end
+			end
+			return SMODS_Blind_call(o)
+		end
+
+		SMODS.Blind:take_ownership('big', {
+			in_pool = function (self)
+				return not G.GAME.showdown_chess
+			end
+		})
+
+		G.FUNCS.reroll_big = function(e)
+			stop_use()
+			G.E_MANAGER:add_event(Event({
+				trigger = 'immediate',
+				func = function()
+				play_sound('other1')
+				G.blind_select_opts.big:set_role({xy_bond = 'Weak'})
+				G.blind_select_opts.big.alignment.offset.y = 20
+				return true
+				end
+			}))
+			G.E_MANAGER:add_event(Event({
+			trigger = 'after',
+			delay = 0.3,
+			func = (function()
+				local par = G.blind_select_opts.big.parent
+				G.GAME.round_resets.blind_choices.Big = SMODS.get_new_blind('big')
+
+				G.blind_select_opts.big:remove()
+				G.blind_select_opts.big = UIBox{
+				T = {par.T.x, 0, 0, 0, },
+				definition =
+					{n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes={
+					UIBox_dyn_container({create_UIBox_blind_choice('Big')},false,get_blind_main_colour('Big'), mix_colours(G.C.BLACK, get_blind_main_colour('Big'), 0.8))
+					}},
+				config = {align="bmi",
+							offset = {x=0,y=G.ROOM.T.y + 9},
+							major = par,
+							xy_bond = 'Weak'
+						}
+				}
+				par.config.object = G.blind_select_opts.big
+				par.config.object:recalculate()
+				G.blind_select_opts.big.parent = par
+				G.blind_select_opts.big.alignment.offset.y = 0
+				
+				G.E_MANAGER:add_event(Event({blocking = false, trigger = 'after', delay = 0.5,func = function()
+					--G.CONTROLLER.locks.boss_reroll = nil
+					return true
+				end
+				}))
+
+				save_run()
+				for i = 1, #G.GAME.tags do
+				if G.GAME.tags[i]:apply_to_run({type = 'new_blind_choice'}) then break end
+				end
+				return true
+			end)
+			}))
 		end
 
 		if not (SMODS.Mods["Cryptid"] or {}).can_load then

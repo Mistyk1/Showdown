@@ -29,4 +29,4 @@ The mod is compatible with some other mods, check this out:
 
 The mod content is configurable! You can deactivate any category of items or any mod compatibility in the mod config.
 
-You currently need **Steamodded Alpha 1.0.0** version **1016c** at least
+You currently need **Steamodded v26.829.0** at least

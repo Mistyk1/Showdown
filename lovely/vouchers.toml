@@ -8,7 +8,7 @@ priority = 0
 [patches.pattern]
 target = 'card.lua'
 match_indent = true
-pattern = '''SMODS.calculate_context({open_booster = true, card = self})'''
+pattern = '''SMODS.calculate_context({open_booster = true, card = self, booster = booster_obj})'''
 position = 'after'
 payload = '''
 check_for_unlock({type = 'open_booster', card = self})

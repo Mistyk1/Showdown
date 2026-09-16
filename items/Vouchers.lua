@@ -39,7 +39,7 @@ local axiom_infinity = {
         if args.type == 'open_booster' and args.card and args.card.ability.name:find('showdown_calculus') and (G.GAME.calculus_booster_opened or 0) < 10 then
 			G.GAME.calculus_booster_opened = (G.GAME.calculus_booster_opened or 0) + 1
 			print(G.GAME.calculus_booster_opened)
-			if G.GAME.calculus_booster_opened == 10 then
+			if G.GAME.calculus_booster_opened == 6 then
 				unlock_card(self)
 			end
 		end
@@ -174,6 +174,23 @@ local truth_table = {
     unlocked = false,
     requires = {'v_showdown_sequential_logic'},
 	pos = coordinate(6, 2),
+	check_for_unlock = function(self, args)
+        if args.type == 'discover_amount' then
+			local _total_count = 0
+            local _discovered_count = 0
+            for _, _logic in pairs(G.P_CENTERS) do
+                if _logic.set == "Logic" then
+                    _total_count = _total_count + 1
+                    if _logic.discovered then
+                        _discovered_count = _discovered_count + 1
+                    end
+                end
+            end
+            if _total_count == _discovered_count then
+                unlock_card(self)
+			end
+		end
+    end,
 	redeem = function(self)
 		G.E_MANAGER:add_event(Event({
 			func = function()

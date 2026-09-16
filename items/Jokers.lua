@@ -1514,7 +1514,7 @@ local joker_variance_authorithy = {
     name = 'joker_variance_authorithy',
     atlas = "showdown_jokers",
     pos = coordinate(49),
-    config = {extra = {mult = 0, mult_scale = 4}},
+    config = {extra = {mult = 0, mult_scale = 10}},
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.mult_scale, card.ability.extra.mult } }
 	end,
@@ -2903,21 +2903,6 @@ local point_of_no_return = {
     pos = coordinate(90),
     rarity = 2, cost = 6,
     blueprint_compat = true, perishable_compat = true, eternal_compat = true,
-    unlocked = false,
-    check_for_unlock = function(self, args)
-        if args.type == 'hand_contents' then
-            local eval = evaluate_poker_hand(args.cards)
-            if next(eval['Straight']) then
-                local hasZero = false
-                for j = 1, #args.cards do
-                    hasZero = hasZero or SMODS.is_zero(args.cards[j])
-                end
-                if hasZero then
-                    unlock_card(self)
-                end
-            end
-        end
-    end,
     calculate = function(self, card, context)
         if context.cardarea == G.jokers and context.after and not context.blueprint_card and not context.retrigger_joker then
             for i=1, #context.scoring_hand do
@@ -3040,7 +3025,6 @@ local soul_malice = {
             local has_blueprint = false
             local has_sock_and_buskin = false
             for _, joker_name in ipairs(args.jokers) do
-                print(joker_name)
                 has_blueprint = has_blueprint or joker_name == 'Blueprint'
                 has_sock_and_buskin = has_sock_and_buskin or joker_name == 'Sock and Buskin'
             end

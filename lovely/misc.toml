@@ -72,7 +72,8 @@ payload = '''
 {n=G.UIT.T, config={text = args.label, scale = args.label_scale, colour = args.label_color or G.C.UI.TEXT_LIGHT}},
 '''
 
-# Add a reroll tags debug button, part 1/2
+# Add a tag reroll debug button, part 1/2
+# Add a big blind reroll debug button, part 1/2
 [[patches]]
 [patches.pattern]
 target = '''functions/UI_definitions.lua'''
@@ -90,9 +91,10 @@ G.FUNCS.DT_reroll_tags = function()
         end
     end
 end
+G.FUNCS.DT_reroll_big = function() if G.STAGE == G.STAGES.RUN and G.blind_select_opts then G.FUNCS.reroll_big(); end end
 '''
 
-# Add a reroll tags debug button, part 2/2
+# Add a tag reroll debug button, part 2/2
 [[patches]]
 [patches.pattern]
 target = '''functions/UI_definitions.lua'''
@@ -101,6 +103,17 @@ pattern = '''UIBox_button{ label = {"Jimbo talk"}, button = "DT_jimbo_talk", min
 position = "after"
 payload = '''
 UIBox_button{ label = {"Reroll tags"}, button = "DT_reroll_tags", minw = 1.7, minh = 0.4, scale = 0.35},
+'''
+
+# Add a tag reroll debug button, part 2/2
+[[patches]]
+[patches.pattern]
+target = '''functions/UI_definitions.lua'''
+match_indent = true
+pattern = '''UIBox_button{ label = {"Background"}, button = "DT_toggle_background", minw = 1.7, minh = 0.4, scale = 0.35},'''
+position = "after"
+payload = '''
+UIBox_button{ label = {"Reroll Big"}, button = "DT_reroll_big", minw = 1.7, minh = 0.4, scale = 0.35},
 '''
 
 # Hue Shift easter egg

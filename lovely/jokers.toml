@@ -380,13 +380,13 @@ payload = '''
 check_for_unlock({type = 'extinct', name = self.ability.name})
 '''
 
-# Versatile Joker (Nebula Deck), part 1/2
+# Versatile Joker (Nebula Deck)
 [[patches]]
 [patches.pattern]
 target = "card.lua"
 match_indent = true
-pattern = "update_hand_text({sound = 'button', volume = 0.7, pitch = 0.8, delay = 0.3}, {handname=localize(self.ability.consumeable.hand_type, 'poker_hands'),chips = G.GAME.hands[self.ability.consumeable.hand_type].chips, mult = G.GAME.hands[self.ability.consumeable.hand_type].mult, level=G.GAME.hands[self.ability.consumeable.hand_type].level})"
-position = "before"
+pattern = "level_up_hand(used_tarot, self.ability.consumeable.hand_type)"
+position = "at"
 payload = '''
 local versatile, amount = find_joker('versatile_joker'), 1
 if #versatile > 0 and G.GAME.selected_back.name == 'Nebula Deck' then
@@ -397,16 +397,7 @@ if #versatile > 0 and G.GAME.selected_back.name == 'Nebula Deck' then
     for i=1, #versatile do amount = amount + versatile[i].ability.extra.planet end
 end
 amount = math.floor(amount)
-'''
 
-# Versatile Joker (Nebula Deck), part 2/2
-[[patches]]
-[patches.pattern]
-target = "card.lua"
-match_indent = true
-pattern = "level_up_hand(used_tarot, self.ability.consumeable.hand_type)"
-position = "at"
-payload = '''
 level_up_hand(used_tarot, self.ability.consumeable.hand_type, nil, amount)
 '''
 
@@ -584,26 +575,15 @@ payload = '''
 G.GAME.money_gain_in_round = 0
 '''
 
-# Don't win again at ante 8 if already won with Ultimate Joker or Unschakled Joker
-[[patches]]
-[patches.pattern]
-target = 'functions/state_events.lua'
-pattern = '''if G.GAME.round_resets.ante == G.GAME.win_ante and G.GAME.blind:get_type() == 'Boss' then'''
-position = 'at'
-match_indent = true
-payload = '''
-if G.GAME.round_resets.ante == G.GAME.win_ante and G.GAME.blind:get_type() == 'Boss' and not G.GAME.won then
-'''
-
 # Versatile Joker (Chess Deck), part 1/2
 [[patches]]
 [patches.pattern]
 target = 'blind.lua'
 match_indent = true
-pattern = "self.boss = blind and not not blind.boss"
+pattern = "self[current_type] = blind and true or nil"
 position = 'after'
 payload = '''
-self.chess_boss = blind and blind.chess_boss
+self.is_chess_boss = blind and blind.config and blind.config.is_chess_boss
 '''
 
 # Versatile Joker (Chess Deck), part 2/2
@@ -614,7 +594,7 @@ match_indent = true
 pattern = "self.boss = blindTable.boss"
 position = 'after'
 payload = '''
-self.chess_boss = blindTable.chess_boss
+self.is_chess_boss = blindTable.config and blindTable.config.is_chess_boss
 '''
 
 # Atom unlock
@@ -632,11 +612,11 @@ check_for_unlock({type = 'modify_rank', card = G.hand.highlighted[i]})
 [[patches]]
 [patches.pattern]
 target = "card.lua"
-pattern = "nominal_chips = self.base.nominal > 0 and self.base.nominal or nil,"
+pattern = "nominal_chips = self.base.nominal ~= 0 and self.base.nominal or nil,"
 position = "at"
 match_indent = true
 payload = '''
-nominal_chips = self.base.nominal > 0 and self.base.nominal * (SMODS.Ranks[self.base.value].counterpart and G.GAME.counterpart_turbo_boost or 1) or nil,
+nominal_chips = self.base.nominal ~= 0 and self.base.nominal * (SMODS.Ranks[self.base.value].counterpart and G.GAME.counterpart_turbo_boost or 1) or nil,
 '''
 
 # Turbo, part 2/2
