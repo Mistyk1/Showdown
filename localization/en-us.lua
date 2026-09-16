@@ -2806,6 +2806,7 @@ return {
             ach_showdown_fargo_proud = 'Have Deviantt, Abominationn and Mutant at the same time',
             ach_showdown_everything_flush = 'Have SIM Card and Hiding in the Details at the same time',
             ach_showdown_double_hand = 'Play a hand with 10 cards',
+            ach_showdown_who_am_i = 'Fuse two cards together to make a card with an enhancement, an edition, a seal and a sticker',
         },
         achievement_names={
             ach_showdown_get_jean_paul = ':3',
@@ -2829,6 +2830,7 @@ return {
             ach_showdown_fargo_proud = 'Fargo would be proud',
             ach_showdown_everything_flush = 'Everything is a flush',
             ach_showdown_double_hand = 'Double Hand',
+            ach_showdown_who_am_i = 'Who am I anyways?',
         },
         blind_states={},
         challenge_names={

@@ -46,6 +46,7 @@ local self_reference = make_achievement('self_reference', trophies.silver, true)
 local fargo_proud = make_achievement('fargo_proud', trophies.gold) -- Fargo would be proud
 local everything_flush = make_achievement('everything_flush', trophies.silver, true) -- Everything is a Flush
 local double_hand = make_achievement('double_hand', trophies.gold) -- Double hand
+local who_am_i = make_achievement('who_am_i', trophies.silver) -- Who am I anyways?
 
 return {
 	enabled = Showdown.config["Achievements"],
@@ -83,6 +84,9 @@ return {
 		if Showdown.has_stakes then
 			--table.insert(list, completionist_plus_plus_plus)
 			--table.insert(list, you_can_stop_now)
+		end
+		if Showdown.config["Consumables"]["Mathematics"] then
+			table.insert(list, who_am_i)
 		end
 		return list
 	end,

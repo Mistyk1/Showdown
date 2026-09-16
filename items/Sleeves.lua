@@ -95,6 +95,9 @@ local cheater = {
             G.GAME.cheater_seal = true
         end
 	end,
+	calculate = function(self, card, context)
+        return SMODS.Back.obj_table["b_showdown_Cheater"]:calculate(card, context)
+	end,
 }
 
 local engineer = {

@@ -37,6 +37,7 @@ local constant = {
 			local rank = _card:get_id()
 			if findInTable(rank, ranks) == -1 then
 				table.insert(ranks, rank)
+				print(rank)
 			end
 		end
 		local toEnhance = {}
@@ -44,10 +45,11 @@ local constant = {
 			local _card = G.hand.cards[i]
 			if
 				findInTable(_card, cards) == -1
-				and findInTable(_card:get_id(), ranks)
+				and findInTable(_card:get_id(), ranks) ~= -1
 				--and _card.ability.effect == "Base"
 			then
 				toEnhance[#toEnhance+1] = _card
+				print(_card:get_id())
 			end
 		end
 		for _, _card in pairs(cards) do
@@ -322,9 +324,9 @@ local operation = {
 		return true end })
 		delay(0.2)
 		event({trigger = 'after', delay = 0.7, func = function()
-			local function randomValue(value1, value2)
-				if not value1 then return value2
-				elseif not value2 then return value1
+			local function randomValue(value1, value2, notValue)
+				if value1 == notValue then return value2
+				elseif value2 == notValue then return value1
 				elseif SMODS.pseudorandom_probability(card, 'showdown_Probability', 1, 2) then
 					return value1
 				else
@@ -332,37 +334,35 @@ local operation = {
 				end
 			end
 			local cardValues1 = {
-				ability = card1.config.center,
+				enhancement = next(SMODS.get_enhancements(card1)),
 				edition = card1.edition,
 				seal = card1.seal
 			}
 			local cardValues2 = {
-				ability = card2.config.center,
+				enhancement = next(SMODS.get_enhancements(card2)),
 				edition = card2.edition,
 				seal = card2.seal
 			}
-			local _rank = pseudorandom_element(get_all_ranks(), pseudoseed('showdown_Probability'))
-			local _suit = pseudorandom_element(get_all_suits(), pseudoseed('showdown_Probability'))
-			local center = G.P_CENTERS.c_base
-			---- This is horrendous
-			local enhancements = {}
-			for k, v in pairs(G.P_CENTERS) do if v.set == "Enhanced" then enhancements[v.name] = k end end
-			enhancements["Default Base"] = "c_base"
-			if enhancements[cardValues1.ability.name] == "Default Base" then center = G.P_CENTERS[enhancements[cardValues2.ability.name]]
-			elseif enhancements[cardValues2.ability.name] == "Default Base" then center = G.P_CENTERS[enhancements[cardValues1.ability.name]]
-			elseif SMODS.pseudorandom_probability(card, 'showdown_Probability', 1, 2) then
-				center = G.P_CENTERS[enhancements[cardValues2.ability.name]]
-			else
-				center = G.P_CENTERS[enhancements[cardValues1.ability.name]]
-			end
-			----
+
 			local edition = randomValue(cardValues1.edition, cardValues2.edition)
 			local seal = randomValue(cardValues1.seal, cardValues2.seal)
-			local _card = create_playing_card({front = G.P_CARDS[_suit..'_'.._rank], center = center}, G.hand, true)
-			if edition then _card:set_edition(edition) end
-			if seal then _card:set_seal(seal) end
-			_card:start_materialize()
-			playing_card_joker_effects(_card)
+			local enhancement = randomValue(cardValues1.enhancement, cardValues2.enhancement)
+			local stickers = {}
+			for _, v in ipairs(SMODS.Sticker.obj_buffer) do
+                if card1.ability[v] or card2.ability[v] then
+                    table.insert(stickers, v)
+                    break
+                end
+            end
+			if edition and seal and enhancement and #stickers > 0 then
+				check_for_unlock({type = 'who_am_i'})
+			end
+
+			local _card = SMODS.create_card({ set = 'Base', no_edition = true, edition = edition, enhancement = enhancement, seal = seal })
+			for _, v in ipairs(stickers) do
+				_card:add_sticker(v, true)
+			end
+			SMODS.add_to_deck(_card, G.hand)
 		return true end })
     end
 }
