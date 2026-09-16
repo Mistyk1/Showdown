@@ -3370,6 +3370,85 @@ local gummy_worms = {
     end,
 }
 
+local deviantt = {
+    type = 'Joker',
+    order = 96,
+    key = 'deviantt',
+    name = 'deviantt',
+    atlas = "showdown_jokers",
+    pos = coordinate(101), soul_pos = coordinate(102),
+    config = {extra = { x_chips = 2.5 }},
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.x_chips } }
+	end,
+    rarity = 4, cost = 10,
+    blueprint_compat = true, perishable_compat = true, eternal_compat = true,
+    calculate = function(self, card, context)
+        if context.other_joker and (context.other_joker:is_rarity("Legendary") or context.other_joker:is_rarity("showdown_Final")) then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    context.other_joker:juice_up(0.5, 0.5)
+                    return true
+                end
+            }))
+            return {
+                xchips = card.ability.extra.x_chips
+            }
+        end
+    end,
+    add_to_deck = function(self, card, from_debuff)
+        local mutant, abominationn = find_joker('mutant'), find_joker('abominationn')
+        if next(mutant) and next(abominationn) then
+            check_for_unlock({type = 'fargo_proud'})
+        end
+    end,
+}
+
+local abominationn = {
+    type = 'Joker',
+    order = 97,
+    key = 'abominationn',
+    name = 'abominationn',
+    atlas = "showdown_jokers",
+    pos = coordinate(103), soul_pos = coordinate(104),
+    config = {extra = { blind_requirement_division = 2 }},
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.blind_requirement_division } }
+	end,
+    rarity = 4, cost = 10,
+    blueprint_compat = true, perishable_compat = true, eternal_compat = true,
+    calculate = function(self, card, context)
+        if context.setting_blind and not (context.blueprint_card or card).getting_sliced then
+            G.E_MANAGER:add_event(Event({func = function()
+                Showdown.modify_blind_score(G.GAME.blind.chips / card.ability.extra.blind_requirement_division)
+            return true end }))
+        end
+    end,
+    add_to_deck = function(self, card, from_debuff)
+        local deviantt, mutant = find_joker('deviantt'), find_joker('mutant')
+        if next(deviantt) and next(mutant) then
+            check_for_unlock({type = 'fargo_proud'})
+        end
+    end,
+}
+
+local mutant = {
+    type = 'Joker',
+    order = 98,
+    key = 'mutant',
+    name = 'mutant',
+    atlas = "showdown_jokers",
+    pos = coordinate(105), soul_pos = coordinate(106),
+    rarity = 4, cost = 10,
+    blueprint_compat = false, perishable_compat = true, eternal_compat = true,
+    add_to_deck = function(self, card, from_debuff)
+        local deviantt, abominationn = find_joker('deviantt'), find_joker('abominationn')
+        if next(deviantt) and next(abominationn) then
+            check_for_unlock({type = 'fargo_proud'})
+        end
+    end,
+}
+
 return {
 	enabled = Showdown.config["Jokers"]["Normal"],
 	list = {
@@ -3450,6 +3529,9 @@ return {
             gamma_pulse,
             patchwork_joker,
             gummy_worms,
+            deviantt,
+            abominationn,
+            mutant,
             --- Ranks Jokers
             pinpoint,
             math_teacher,

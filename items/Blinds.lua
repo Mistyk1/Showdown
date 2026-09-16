@@ -556,31 +556,33 @@ return {
 		{key = "showdown_blinds", path = "Blinds.png", px = 34, py = 34, atlas_table = "ANIMATION_ATLAS", frames = 21},
 	},
 	exec = function()
-		function SMODS.patient_gain_score(blind) -- Thanks Bunco
-			if not G.GAME.patient_scoring then G.GAME.patient_scoring = { score = blind.chips, triggers = 0 } end
-			G.GAME.patient_scoring.triggers = G.GAME.patient_scoring.triggers + 1
-			local final_chips = (G.GAME.patient_scoring.score / 100) * (100 + 50 * G.GAME.patient_scoring.triggers)
-			local chip_mod -- iterate over ~480 ticks
-			if type(blind.chips) ~= 'table' then
-				chip_mod = math.ceil((G.GAME.blind.chips + final_chips) / 480)
-			else
-				chip_mod = ((G.GAME.blind.chips + final_chips) / 480):ceil()
-			end
-			local step = 0
-			G.E_MANAGER:add_event(Event({trigger = 'after', blocking = true, func = function()
-				blind.chips = blind.chips + G.SETTINGS.GAMESPEED * chip_mod
-				if blind.chips < final_chips then
-					blind.chip_text = number_format(blind.chips)
-					if step % 5 == 0 then
-						play_sound('chips1', 1.0 + (step * 0.005))
-					end
-					step = step + 1
+		function Showdown.modify_blind_score(amount) --Thanks Bunco
+			if G.GAME.blind then
+				local higher = amount > G.GAME.blind.chips
+				local chip_mod -- iterate over ~480 ticks
+				if type(G.GAME.blind.chips) ~= 'table' then
+					chip_mod = math.ceil((amount - G.GAME.blind.chips) / 480)
 				else
-					blind.chips = final_chips
-					blind.chip_text = number_format(blind.chips)
-					return true
+					chip_mod = ((amount - G.GAME.blind.chips) / 480):ceil()
 				end
-			end}))
+				chip_mod = higher and math.max(1, chip_mod) or math.min(-1, chip_mod)
+				local step = 0
+				G.E_MANAGER:add_event(Event({trigger = 'after', blocking = true, func = function()
+					G.GAME.blind.chips = G.GAME.blind.chips + G.SETTINGS.GAMESPEED * chip_mod
+					if (higher and G.GAME.blind.chips < amount) or (not higher and G.GAME.blind.chips > amount) then
+						G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+						if step % 5 == 0 then
+							if higher then play_sound('chips1', 1.0 + (step * 0.005) % 2 + 0.005)
+							else play_sound('chips1', 2.0 - (step * 0.005) % 2 + 0.005) end
+						end
+						step = step + 1
+					else
+						G.GAME.blind.chips = amount
+						G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+						return true
+					end
+				end}))
+			end
 		end
 
 		local G_FUNCS_evaluate_round_ref = G.FUNCS.evaluate_round

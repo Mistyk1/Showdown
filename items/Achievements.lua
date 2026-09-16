@@ -47,6 +47,7 @@ local fargo_proud = make_achievement('fargo_proud', trophies.gold) -- Fargo woul
 local everything_flush = make_achievement('everything_flush', trophies.silver, true) -- Everything is a Flush
 local double_hand = make_achievement('double_hand', trophies.gold) -- Double hand
 local who_am_i = make_achievement('who_am_i', trophies.silver) -- Who am I anyways?
+local fargo_proud = make_achievement('fargo_proud', trophies.gold, true) -- Fargo would be proud
 
 return {
 	enabled = Showdown.config["Achievements"],
@@ -72,7 +73,7 @@ return {
 			table.insert(list, never_tell_odds)
 			table.insert(list, should_check)
 			table.insert(list, self_reference)
-			--table.insert(list, fargo_proud)
+			table.insert(list, fargo_proud)
 			if Showdown.config["Ranks"] then
 				table.insert(list, everything_flush)
 				table.insert(list, double_hand)

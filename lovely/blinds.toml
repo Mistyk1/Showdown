@@ -12,7 +12,9 @@ pattern = '''-- TARGET: effects after hand evaluation'''
 position = 'after'
 payload = '''
 if G.GAME.blind and G.GAME.blind.name == 'The Patient' and not G.GAME.blind.disabled and G.GAME.current_round.hands_left > 0 then --and hand_chips*mult + G.GAME.chips >= G.GAME.blind.chips then
-    SMODS.patient_gain_score(G.GAME.blind)
+    if not G.GAME.patient_scoring then G.GAME.patient_scoring = { score = G.GAME.blind.chips, triggers = 0 } end
+    G.GAME.patient_scoring.triggers = G.GAME.patient_scoring.triggers + 1
+    Showdown.modify_blind_score((G.GAME.patient_scoring.score / 100) * (100 + 50 * G.GAME.patient_scoring.triggers))
     G.GAME.blind.triggered = true
 end
 '''

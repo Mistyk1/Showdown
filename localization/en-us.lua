@@ -1775,6 +1775,37 @@ return {
                     "at end of round",
                 }
             },
+            j_showdown_deviantt = {
+                name = 'Deviantt',
+                text = {
+                    '{C:legendary,E:1}Legendary{} Jokers',
+                    'each gives {X:chips,C:white}X#1#{} Chips',
+                },
+                unlock = {
+                    'idk',
+                }
+            },
+            j_showdown_abominationn = {
+                name = 'Abominationn',
+                text = {
+                    'Blind requirements are',
+                    'divided by {C:attention}#1#{} at the',
+                    'start of the round',
+                },
+                unlock = {
+                    'idk',
+                }
+            },
+            j_showdown_mutant = {
+                name = 'Mutant',
+                text = {
+                    '{C:legendary,E:1}Legendary{} Jokers can',
+                    'appear in {C:attention}shop{} and {C:attention}boosters',
+                },
+                unlock = {
+                    'idk',
+                }
+            },
         },
         Other={
             showdown_static = {
@@ -2803,10 +2834,10 @@ return {
             ach_showdown_never_tell_odds = 'Generate at least 3 of the same card with Chaos Card',
             ach_showdown_should_check = 'Get to 100% infection rate',
             ach_showdown_self_reference = 'Have a Rules Card that is copying a Rules Card',
-            ach_showdown_fargo_proud = 'Have Deviantt, Abominationn and Mutant at the same time',
             ach_showdown_everything_flush = 'Have SIM Card and Hiding in the Details at the same time',
             ach_showdown_double_hand = 'Play a hand with 10 cards',
             ach_showdown_who_am_i = 'Fuse two cards together to make a card with an enhancement, an edition, a seal and a sticker',
+            ach_showdown_fargo_proud = 'Have Deviantt, Abominationn and Mutant at the same time',
         },
         achievement_names={
             ach_showdown_get_jean_paul = ':3',
@@ -2827,10 +2858,10 @@ return {
             ach_showdown_never_tell_odds = 'Never tell me the odds',
             ach_showdown_should_check = 'You should get that checked',
             ach_showdown_self_reference = 'Self-referential rule',
-            ach_showdown_fargo_proud = 'Fargo would be proud',
             ach_showdown_everything_flush = 'Everything is a flush',
             ach_showdown_double_hand = 'Double Hand',
             ach_showdown_who_am_i = 'Who am I anyways?',
+            ach_showdown_fargo_proud = 'Fargo would be proud',
         },
         blind_states={},
         challenge_names={

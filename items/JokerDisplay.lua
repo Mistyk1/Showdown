@@ -1111,6 +1111,36 @@ table.insert(def_list.jokers, {
     }
 })
 
+table.insert(def_list.jokers, {
+    key = 'deviantt',
+    reminder_text = {
+        { text = "(" },
+        { ref_table = "card.joker_display_values", ref_value = "count", colour = G.C.ORANGE },
+        { text = "x" },
+        { ref_table = "card.joker_display_values", ref_value = "localized_text", colour = G.C.RARITY[4] },
+        { text = ")" },
+    },
+    calc_function = function(card)
+        local count = 0
+        if G.jokers then
+            for _, joker_card in ipairs(G.jokers.cards) do
+                if joker_card:is_rarity("Legendary") or joker_card:is_rarity("showdown_Final") then
+                    count = count + 1
+                end
+            end
+        end
+        card.joker_display_values.count = count
+        card.joker_display_values.localized_text = localize("k_legendary")
+    end,
+    mod_function = function(card, mod_joker)
+        return { x_chips = ((card:is_rarity("Legendary") or card:is_rarity("showdown_Final")) and mod_joker.ability.extra.x_chips ^ JokerDisplay.calculate_joker_triggers(mod_joker) or nil) }
+    end
+})
+
+--table.insert(def_list.jokers, { key = 'abominationn' })
+
+--table.insert(def_list.jokers, { key = 'mutant' })
+
 -- Blinds
 -- (Chess blinds are excluded because Blind display is used only for Matador and Matador only works for Boss Blinds)
 
