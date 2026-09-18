@@ -55,7 +55,6 @@ local holy = {
 
 local cut = {
 	type = 'Enhancement',
-	experimental = true,
 	order = 3,
 	key = 'cut',
 	atlas = 'showdown_enhancements',
@@ -79,7 +78,6 @@ local cut = {
 
 local chipped = {
 	type = 'Enhancement',
-	experimental = true,
 	order = 4,
 	key = 'chipped',
 	atlas = 'showdown_enhancements',
@@ -165,7 +163,6 @@ local cursed = {
 
 local taped = {
 	type = 'Enhancement',
-	experimental = true,
 	order = 1002,
 	key = 'taped',
 	atlas = 'showdown_enhancementsMoreFluff',

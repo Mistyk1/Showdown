@@ -102,7 +102,6 @@ local blue_key = {
 
 local transformation = {
 	type = 'Consumable',
-	experimental = true,
 	order = 4,
 	key = 'transformation',
 	set = 'Spectral',

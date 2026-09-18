@@ -1,3 +1,40 @@
+-- Draw steps for multiple stickers
+
+--[[ it doesn't work and i don't know why :(
+
+local stickers_alt_draw_step_1 = {
+	type = 'DrawStep',
+	key = 'stickers_alt_1',
+	order = 41,
+    func = function(card, layer)
+        if (card.sticker_run_alt and G.shared_stickers[card.sticker_run_alt]) and Showdown.has_stakes and G.SETTINGS.run_stake_stickers then
+            G.shared_stickers[card.sticker_run_alt].role.draw_major = card
+            G.shared_stickers[card.sticker_run_alt]:draw_shader('dissolve', nil, nil, nil, card.children.center)
+            G.shared_stickers[card.sticker_run_alt]:draw_shader('voucher', nil, card.ARGS.send_to_shader, nil, card.children.center)
+        end
+    end,
+    conditions = { vortex = false, facing = 'front' },
+}
+
+local stickers_alt_draw_step_2 = {
+	type = 'DrawStep',
+	key = 'stickers_alt_2',
+	order = 42,
+    func = function(card, layer)
+        if Showdown.has_stakes and card.sticker_run_alt and G.shared_stickers[card.sticker_run_alt] then
+			G.shared_stickers[card.sticker_run_alt].role.draw_major = card
+			local sticker_run_alt_offset = card.sticker_run_alt_offset or {}
+			G.shared_stickers[card.sticker_run_alt]:draw_shader('dissolve', nil, nil, true, card.children.center, nil, card.sticker_rotation, sticker_run_alt_offset.x, sticker_run_alt_offset.y)
+			if card.sticker_run_alt == 'showdown_diamond' then G.shared_stickers[card.sticker_run_alt]:draw_shader('voucher', nil, card.ARGS.send_to_shader, true, card.children.center) end
+		end
+    end,
+    conditions = { vortex = false, facing = 'front' },
+}
+
+]]--
+
+-- Stakes
+
 local ruby = {
 	type = 'StakeAlt',
 	order = 1,
@@ -102,6 +139,9 @@ local diamond = {
 return {
 	enabled = Showdown.has_stakes,
 	list = {
+		--stickers_alt_draw_step_1,
+		--stickers_alt_draw_step_2,
+
 		ruby,
 		emerald,
 		onyx,

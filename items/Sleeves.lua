@@ -5,7 +5,7 @@ local mirror = {
 	atlas = "showdown_sleeves",
 	pos = coordinate(1),
 	unlocked = false,
-	unlock_condition = {deck = "b_showdown_Mirror", stake = "stake_showdown_emerald"},
+	unlock_condition = {deck = "b_showdown_Mirror", stake = "stake_showdown_ruby"},
 	loc_vars = function(self)
 		return { key = self.key..(self.get_current_deck_key() == "b_showdown_Mirror" and "_alt" or "") }
 	end,
@@ -107,7 +107,7 @@ local engineer = {
 	atlas = "showdown_sleeves",
 	pos = coordinate(5),
 	unlocked = false,
-	unlock_condition = {deck = "b_showdown_Engineer", stake = "stake_showdown_amethyst"},
+	unlock_condition = {deck = "b_showdown_Engineer", stake = "stake_showdown_emerald"},
 	loc_vars = function(self)
 		return { key = self.key..(self.get_current_deck_key() == "b_showdown_Engineer" and "_alt" or "") }
 	end,
@@ -143,7 +143,7 @@ local chess = {
 	atlas = "showdown_sleeves",
 	pos = coordinate(6),
 	unlocked = false,
-	unlock_condition = {deck = "b_showdown_Chess", stake = "stake_showdown_amethyst"},
+	unlock_condition = {deck = "b_showdown_Chess", stake = "stake_showdown_onyx"},
 	loc_vars = function(self)
 		return { key = self.key..(self.get_current_deck_key() == "b_showdown_Chess" and "_alt" or "") }
 	end,
@@ -163,13 +163,12 @@ local chess = {
 
 local slotted = {
 	type = 'Sleeve',
-	experimental = true,
 	order = 7,
 	key = "Slotted",
 	atlas = "showdown_sleeves",
 	pos = coordinate(6),
 	unlocked = false,
-	unlock_condition = {deck = "b_showdown_Slotted", stake = "stake_showdown_amethyst"},
+	unlock_condition = {deck = "b_showdown_Slotted", stake = "stake_showdown_onyx"},
 	loc_vars = function(self)
 		return { key = self.key..(self.get_current_deck_key() == "b_showdown_Slotted" and "_alt" or "") }
 	end,
@@ -189,12 +188,38 @@ local slotted = {
 	end
 }
 
+local one_of_a_kind = {
+	type = 'Sleeve',
+	order = 8,
+	key = "one_of_a_kind",
+	atlas = "showdown_sleeves",
+	pos = coordinate(7),
+	unlocked = false,
+	unlock_condition = {deck = "b_showdown_one_of_a_kind", stake = "stake_showdown_emerald"},
+	loc_vars = function(self)
+		return { key = self.key..(self.get_current_deck_key() == "b_showdown_one_of_a_kind" and "_alt" or "") }
+	end,
+	locked_loc_vars = function(self)
+		if not Showdown.has_stakes then return { key = 'sleeve_showdown_deactivated' } end
+		return CardSleeves.Sleeve.locked_loc_vars(self)
+	end,
+	apply = function(self, sleeve)
+        CardSleeves.Sleeve.apply(self)
+		if self.get_current_deck_key() ~= "b_showdown_one_of_a_kind" then
+            SMODS.Back.obj_table["b_showdown_one_of_a_kind"].apply(self, sleeve)
+        else
+			G.GAME.showdown_one_of_a_kind_more_selection = 1
+        end
+	end
+}
+
 return {
 	enabled = (SMODS.Mods["CardSleeves"] or {}).can_load and Showdown.config["CrossMod"]["CardSleeves"],
 	list = function()
 		local list = {
 			starter,
 			slotted,
+			one_of_a_kind,
 		}
 		if Showdown.config["Ranks"] then
 			table.insert(list, mirror)

@@ -179,7 +179,7 @@ payload = '''
 if Showdown.has_stakes and self.sticker_run_alt and G.shared_stickers[self.sticker_run_alt] and G.SETTINGS.run_stake_stickers then
     G.shared_stickers[self.sticker_run_alt].role.draw_major = self
     G.shared_stickers[self.sticker_run_alt]:draw_shader('dissolve', nil, nil, nil, self.children.center)
-    G.shared_stickers[self.sticker_run_alt]:draw_shader('voucher', nil, self.ARGS.send_to_shader, nil, self.children.center)
+   G.shared_stickers[self.sticker_run_alt]:draw_shader('voucher', nil, self.ARGS.send_to_shader, nil, self.children.center)
 end
 '''
 
@@ -203,17 +203,17 @@ end
 '''
 
 # Alternative stake stickers, part 16/17 (need to be finished)
-[[patches]]
-[patches.pattern]
-target = '''functions/misc_functions.lua'''
-pattern = '''G.PROFILES[G.SETTINGS.profile].joker_usage[v.config.center_key].wins_by_key[SMODS.stake_from_index(G.GAME.stake)] = (G.PROFILES[G.SETTINGS.profile].joker_usage[v.config.center_key].wins_by_key[SMODS.stake_from_index(G.GAME.stake)] or 0) + 1'''
-position = "after"
-match_indent = true
-payload = '''
-if G.P_CENTER_POOLS.Stake[G.GAME.stake].alternate then
-    --
-end
-'''
+#[[patches]]
+#[patches.pattern]
+#target = '''functions/misc_functions.lua'''
+#pattern = '''G.PROFILES[G.SETTINGS.profile].joker_usage[v.config.center_key].wins_by_key[SMODS.stake_from_index(G.GAME.stake)] = (G.PROFILES[G.SETTINGS.profile].joker_usage[v.config.center_key].wins_by_key[SMODS.stake_from_index(G.GAME.stake)] or 0) + 1'''
+#position = "after"
+#match_indent = true
+#payload = '''
+#if G.P_CENTER_POOLS.Stake[G.GAME.stake].alternate then
+#    --
+#end
+#'''
 
 # Alternative stake stickers, part 17/17
 [[patches]]
@@ -266,7 +266,7 @@ payload = '''
 if (G.P_STAKES[key] and G.P_STAKES[key].stake_level or 0) > (_stake and G.P_STAKES[_stake].stake_level or 0) and not G.P_STAKES[key].alternate then
 '''
 
-# Alt stake stickers on sleeves, part 1/2
+# Alt stake stickers on sleeves, part 2/2
 [[patches]]
 [patches.pattern]
 target = '''=[SMODS CardSleeves "CardSleeves.lua"]'''

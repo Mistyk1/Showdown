@@ -112,6 +112,7 @@ return {
                 text = {
                     '{C:attention}Unique booster packs{} are',
                     'available in the shop',
+                    '{C:attention}+1{} Booster Pack slot',
                 },
                 unlock = {
                     "Win a run with any",
@@ -255,6 +256,21 @@ return {
                     '{C:attention}+1{} Joker slot',
                     '{C:attention}+1{} Consumeable slot',
                     '{C:red}-1{} Shop Card slot',
+                }
+            },
+            sleeve_showdown_one_of_a_kind = {
+                name = "One of a Kind Sleeve",
+                text = {
+                    '{C:attention}Unique booster packs{} are',
+                    'available in the shop',
+                    '{C:attention}+1{} Booster Pack slot',
+                }
+            },
+            sleeve_showdown_one_of_a_kind_alt = {
+                name = "One of a Kind Sleeve",
+                text = {
+                    '{C:attention}1{} more card can be selected',
+                    'from {C:attention}unique boosters packs',
                 }
             },
         },
@@ -1267,6 +1283,19 @@ return {
                     '{C:attention}Black Stake{} difficulty',
                 }
             },
+            j_showdown_versatile_joker_one_of_a_kind = {
+                name = 'Versatile Joker',
+                text = {
+                    '{C:attention}+1{} Booster Pack slot',
+                    '{C:attention}Unique boosters packs{} always give',
+                    'the {C:attention}maximum{} amount of cards',
+                },
+                unlock = {
+                    'Win a run with any',
+                    'deck on at least',
+                    '{C:attention}Black Stake{} difficulty',
+                }
+            },
             j_showdown_versatile_joker_all_in_one = {
                 name = 'Versatile Joker',
                 text = {
@@ -2069,6 +2098,34 @@ return {
                     '{C:attention}#2#{} to {C:attention}#3#{} {C:legendary,E:1}Legendary{} Jokers',
                 }
             },
+            p_showdown_tag = {
+                name = 'Tag Pack',
+                text = {
+                    'Gives up to {C:attention}#2#{}',
+                    'random {C:attention}Tags{}',
+                }
+            },
+            p_showdown_tag_generous = {
+                name = 'Generous Tag Pack',
+                text = {
+                    'Gives {C:attention}#1#{} to {C:attention}#2#{}',
+                    'random {C:attention}Tags{}',
+                }
+            },
+            p_showdown_ticket = {
+                name = 'Ticket Pack',
+                text = {
+                    'Choose {C:attention}#1#{} of up to',
+                    '{C:attention}#2#{} to {C:attention}#3#{} {C:attention}Vouchers',
+                }
+            },
+            p_showdown_ticket_generous = {
+                name = 'Generous Ticket Pack',
+                text = {
+                    'Choose {C:attention}#1#{} of up to',
+                    '{C:attention}#2#{} to {C:attention}#3#{} {C:attention}Vouchers',
+                }
+            },
 
             playing_card_zero={
                 text = {
@@ -2501,8 +2558,9 @@ return {
             v_showdown_axiom = {
                 name = 'Axiom of Infinity',
                 text = {
-                    '{C:showdown_calculus}Mathematic{} cards can',
-                    'be used in boosters'
+                    '{C:showdown_calculus}Calculus Packs{} are {C:attention}twice{} as',
+                    'common and {C:showdown_calculus}Mathematic{} cards',
+                    'can be used in boosters',
                 },
                 unlock = {
                     'Open at least {C:attention}#1#{} {C:showdown_calculus}Calculus',
@@ -2915,6 +2973,13 @@ return {
             
             k_showdown_calculus_pack = 'Calculus Pack',
             k_showdown_boolean_pack = 'Boolean Pack',
+            k_showdown_peasant_pack = 'Peasant Pack',
+            k_showdown_jester_pack = 'Jester Pack',
+            k_showdown_knight_pack = 'Knight Pack',
+            k_showdown_royal_pack = 'Royal Pack',
+            k_showdown_tag_pack = 'Tag Pack',
+            k_showdown_ticket_pack = 'Ticket Pack',
+
             k_showdown_final = 'Final',
             k_final = "Final",
             k_rarity = "Rarity",
@@ -3950,6 +4015,42 @@ return {
             main_menu_10 = {
                 'Go play and draw',
                 'me in a game!',
+            },
+            debuffed_1 = {
+                'Aw dude :(',
+            },
+            debuffed_2 = {
+                'I can\'t do',
+                'anything now...',
+            },
+            debuffed_3 = {
+                'NOOOOOOO!!!',
+            },
+            debuffed_4 = {
+                '*muffled noises*',
+            },
+            debuffed_5 = {
+                'Hey what\'s that',
+                'big red cross for?',
+            },
+            debuffed_6 = {
+                '{C:red}Debuffed',
+            },
+            debuffed_7 = {
+                '       ',
+                '       ',
+            },
+            debuffed_8 = {
+                'I hope your build',
+                'did\'t rely entirely',
+                'on me',
+            },
+            debuffed_9 = {
+                ':/',
+            },
+            debuffed_10 = {
+                'This debuff won\'t',
+                'stop me from talking!',
             },
             random_1 = {
                 ':3',

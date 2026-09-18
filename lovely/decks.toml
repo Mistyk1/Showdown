@@ -91,23 +91,30 @@ else
 end
 '''
 
-
-# One of a Kind deck (tag card)
+# Random number of card in One of a Kind boosters
+# One of a Kind Sleeve effect
 [[patches]]
 [patches.pattern]
-target = 'functions/UI_definitions.lua'
-pattern = '''function G.UIDEF.use_and_sell_buttons(card)'''
-position = 'after'
+target = 'card.lua'
+pattern = '''for i = 1, _size do'''
+position = 'before'
 match_indent = true
 payload = '''
-
-if card.area and card.area == G.pack_cards and card.ability.tag_card then
-    return {
-        n = G.UIT.ROOT, config = {padding = 0, colour = G.C.CLEAR}, nodes = {
-            {n = G.UIT.R, config = {ref_table = card, r = 0.08, padding = 0.1, align = "bm", minw = 0.5 * card.T.w - 0.15, maxw = 0.9 * card.T.w - 0.15, minh = 0.3 * card.T.h, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'use_tag_card', func = 'can_use_tag_card'}, nodes = {
-                {n=G.UIT.T, config={text = localize('b_select'), colour = G.C.UI.TEXT_LIGHT, scale = 0.45, shadow = true}}
-        }},
-    }}
+if self.ability.min_cards ~= nil and self.ability.min_cards < _size and not G.GAME.showdown_one_of_a_kind_max_cards then
+    _size = math.ceil(self.ability.min_cards + pseudorandom('one_of_a_kind_card_nb_'..G.SEED) * (_size - self.ability.min_cards))
+    --_size = math.random(self.ability.min_cards, _size)
 end
+'''
 
+# Versatile Joker (One of a Kind)
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = 'G.GAME.pack_choices = math.min((self.ability.choose or self.config.center.config.choose or 1) + (G.GAME.modifiers.booster_choice_mod or 0), self.ability.extra and math.max(1, self.ability.extra + (G.GAME.modifiers.booster_size_mod or 0)) or self.config.center.extra and math.max(1, self.config.center.extra + (G.GAME.modifiers.booster_size_mod or 0)) or 1)'
+position = "after"
+match_indent = true
+payload = '''
+if self.ability.min_cards ~= nil then
+    G.GAME.pack_choices = G.GAME.pack_choices + (G.GAME.showdown_one_of_a_kind_more_selection ~= nil and G.GAME.showdown_one_of_a_kind_more_selection or 0)
+end
 '''

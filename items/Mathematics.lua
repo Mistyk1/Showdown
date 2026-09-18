@@ -3,7 +3,10 @@ local consumable_type = {
     key = 'Mathematic',
     primary_colour = G.C.SHOWDOWN_CALCULUS,
     secondary_colour = G.C.SHOWDOWN_CALCULUS_DARK,
-    collection_rows = {4, 4}
+    collection_rows = {4, 4},
+	--select_card = function(card, pack)
+		--
+	--end,
 }
 
 local undiscovered_sprite = {
@@ -53,7 +56,7 @@ local constant = {
 			end
 		end
 		for _, _card in pairs(cards) do
-			event({trigger = 'after', delay = 0.1, func = function() mathDestroyCard(_card) return true end })
+			event({trigger = 'after', delay = 0.1, func = function() math_destroy_card(_card) return true end })
 		end
         delay(0.2)
 		for i=1, #toEnhance do flipCard(toEnhance[i], i, #toEnhance) end
@@ -85,7 +88,7 @@ local variable = {
 		local money = 0
 		for i = #G.hand.highlighted, 1, -1 do
             event({trigger = 'after', delay = 0.1, func = function()
-				mathDestroyCard(G.hand.highlighted[i], {nil, i == #G.hand.highlighted})
+				math_destroy_card(G.hand.highlighted[i], {nil, i == #G.hand.highlighted})
 			return true end })
 			money = money + math.random(self.config.minMoney, self.config.maxMoney)
         end
@@ -115,7 +118,7 @@ local func = {
 		for _ = 1, self.config.toDestroy do
             event({trigger = 'after', delay = 0.1, func = function()
 				local _card = pseudorandom_element(cards, pseudoseed('showdown_mathematic'))
-				if mathDestroyCard(_card) then
+				if math_destroy_card(_card) then
 					table.remove(G.hand.highlighted, findInTable(_card, G.hand.highlighted))
 					table.remove(cards, findInTable(_card, cards))
 				end
@@ -157,7 +160,7 @@ local shape = {
 		for i = 1, #cards / 2 do
             event({trigger = 'after', delay = 0.1, func = function()
 				local _card = pseudorandom_element(cards, pseudoseed('seed'))
-				if mathDestroyCard(_card, {silent = i == 1}) then
+				if math_destroy_card(_card, {silent = i == 1}) then
 					table.remove(cards, findInTable(_card, cards))
 					table.remove(G.hand.highlighted, findInTable(_card, G.hand.highlighted))
 				end
@@ -195,7 +198,7 @@ local vector = {
     use = function()
 		G.GAME.showdown_vector = (G.GAME.showdown_vector or 0) + #G.hand.highlighted
 		for i=#G.hand.highlighted, 1, -1 do
-            event({trigger = 'after', delay = 0.1, func = function() mathDestroyCard(G.hand.highlighted[i], {nil, i == #G.hand.highlighted}) return true end })
+            event({trigger = 'after', delay = 0.1, func = function() math_destroy_card(G.hand.highlighted[i], {nil, i == #G.hand.highlighted}) return true end })
         end
     end
 }
@@ -228,7 +231,7 @@ local probability = {
 		for i=#G.hand.highlighted, 1, -1 do
             event({trigger = 'after', delay = 0.1, func = function()
 				if G.hand.highlighted ~= nil and SMODS.pseudorandom_probability(card, 'showdown_probability', self.config.extra.initial_odds, card.ability.extra.odds) then
-                	if mathDestroyCard(G.hand.highlighted[i], {nil, first_dissolved}) then first_dissolved = false end
+                	if math_destroy_card(G.hand.highlighted[i], {nil, first_dissolved}) then first_dissolved = false end
 					for k, v in pairs(joker.ability) do
 						if
 							(type(v) == "number" or type(v) == "table")
@@ -294,7 +297,7 @@ local sequence = {
 		update_hand_text({sound = 'button', volume = 0.7, pitch = 1.1, delay = 0}, {mult = 0, chips = 0, handname = '', level = ''})
 		for i=#G.hand.highlighted, 1, -1 do
             event({trigger = 'after', delay = 0.1, func = function()
-                if G.hand.highlighted ~= nil then mathDestroyCard(G.hand.highlighted[i], {nil, i == 1}); end
+                if G.hand.highlighted ~= nil then math_destroy_card(G.hand.highlighted[i], {nil, i == 1}); end
             return true end })
         end
     end
@@ -319,8 +322,8 @@ local operation = {
 		local card1 = G.hand.highlighted[1]
 		local card2 = G.hand.highlighted[2]
 		event({trigger = 'after', delay = 0.1, func = function()
-			mathDestroyCard(card1, {nil, true})
-			mathDestroyCard(card2)
+			math_destroy_card(card1, {nil, true})
+			math_destroy_card(card2)
 		return true end })
 		delay(0.2)
 		event({trigger = 'after', delay = 0.7, func = function()
@@ -389,33 +392,10 @@ return {
 		{key = 'showdown_mathematic', path = 'Consumables/Mathematics.png', px = 71, py = 95},
 	},
 	exec = function()
-		function mathDestroyCard(card, args)
+		function math_destroy_card(card, args)
 			if not card then return end
 			if not args then args = {} end
-			if
-				not G.GAME.mathematic_no_destroy_chance
-				or (G.GAME.mathematic_no_destroy_chance and SMODS.pseudorandom_probability(card, 'mathematic_no_destroy_chance', 1, 3))
-			then
-				card:start_dissolve(args.dissolve_colours, args.silent, args.dissolve_time_fac, args.no_juice)
-				return true
-			else
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-					attention_text({
-						text = localize('k_nope_ex'),
-						scale = 1.3,
-						hold = 1.4,
-						major = card,
-						backdrop_colour = G.C.RED,
-						align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK) and 'tm' or 'cm',
-						offset = {x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK) and -2.2 or -2},
-						silent = true
-						})
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.06*G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
-							play_sound('tarot2', 0.76, 0.4);return true end}))
-						play_sound('tarot2', 1, 0.4)
-						card:juice_up(0.3, 0.5)
-				return true end }))
-			end
+			card:start_dissolve(args.dissolve_colours, args.silent, args.dissolve_time_fac, args.no_juice)
 		end
 	end,
 }

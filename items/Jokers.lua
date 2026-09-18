@@ -1429,7 +1429,7 @@ local money_cutter = {
         if next(find_joker('red_coins')) then check_for_unlock({type = 'green_deck_home'}) end
     end,
     remove_from_deck = function(self, card, from_debuff)
-        G.GAME.modifiers.no_interest = G.GAME.selected_back.effect.config.no_interest
+        G.GAME.modifiers.no_interest = next(find_joker('money_cutter')) ~= nil or G.GAME.selected_back.effect.config.no_interest
     end,
 }
 
@@ -2872,7 +2872,6 @@ local rules_card = {
 
 local terms_of_service = {
     type = 'Joker',
-	experimental = true,
     order = 84,
     key = 'terms_of_service',
     name = 'terms_of_service',
@@ -2895,7 +2894,6 @@ local terms_of_service = {
 
 local point_of_no_return = {
     type = 'Joker',
-	experimental = true,
     order = 85,
     key = 'point_of_no_return',
     name = 'point_of_no_return',
@@ -2924,7 +2922,6 @@ local point_of_no_return = {
 
 local encore = {
     type = 'Joker',
-	experimental = true,
     order = 86,
     activated = { Showdown.config["Ranks"] },
     key = 'encore',
@@ -2974,7 +2971,6 @@ local encore = {
 
 local soul_avarice = {
     type = 'Joker',
-	experimental = true,
     order = 87,
     key = 'soul_avarice',
     name = 'soul_avarice',
@@ -3007,7 +3003,6 @@ local soul_avarice = {
 
 local soul_malice = {
     type = 'Joker',
-	experimental = true,
     order = 88,
     key = 'soul_malice',
     name = 'soul_malice',
@@ -3047,7 +3042,6 @@ local soul_malice = {
 
 local soul_fortune = {
     type = 'Joker',
-	experimental = true,
     order = 89,
     key = 'soul_fortune',
     name = 'soul_fortune',
@@ -3107,7 +3101,6 @@ local soul_fortune = {
 
 local soul_gambling = {
     type = 'Joker',
-	experimental = true,
     order = 90,
     activated = { (SMODS.Mods["FusionJokers"] or {}).can_load and Showdown.config["CrossMod"]["FusionJokers"] },
     key = 'soul_gambling',
@@ -3185,7 +3178,6 @@ local soul_gambling = {
 
 local blinking_block = {
     type = 'Joker',
-	experimental = true,
     order = 91,
     key = 'blinking_block',
     name = 'blinking_block',
@@ -3225,7 +3217,6 @@ local blinking_block = {
 
 local tooth_decay = {
     type = 'Joker',
-	experimental = true,
     order = 92,
     key = 'tooth_decay',
     name = 'tooth_decay',
@@ -3256,7 +3247,6 @@ local tooth_decay = {
 
 local gamma_pulse = {
     type = 'Joker',
-	experimental = true,
     order = 93,
     key = 'gamma_pulse',
     name = 'gamma_pulse',
@@ -3457,7 +3447,7 @@ local mutant = {
         end
     end,
     remove_from_deck = function(self, card, from_debuff)
-        G.GAME.mutant_legendary_pool.in_shop = false
+        G.GAME.mutant_legendary_pool.in_shop = next(find_joker('mutant')) ~= nil
     end,
     load = function(self, card, card_table, other_card)
         if not G.GAME.mutant_legendary_pool then

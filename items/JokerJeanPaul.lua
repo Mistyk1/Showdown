@@ -73,7 +73,9 @@ local jean_paul = {
         if card.area ~= G.rules_card_jokers then
             if card.hasSpeech and card.ability.extra.talk <= 0 then
                 if G.STAGE == G.STAGES.MAIN_MENU then
-                    say(card, {blabla = ("main_menu"), prob = 750})
+                    say(card, {blabla = ("main_menu"), prob = 250})
+                elseif card.debuff then
+                    say(card, {blabla = ("debuffed"), prob = 750})
                 elseif card.area == G.shop_jokers then
                     say(card, {blabla = ('shop_jokers'), prob = 250})
                 elseif card.area == G.jokers and card.ability.extra.inBlind then

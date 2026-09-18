@@ -47,6 +47,7 @@ local axiom_infinity = {
 	redeem = function(self)
 		G.E_MANAGER:add_event(Event({
 			func = function()
+				G.GAME.showdown_twice_calculus = true
 				G.GAME.draw_hand_math = true
 				return true
 			end,
@@ -55,6 +56,7 @@ local axiom_infinity = {
 	unredeem = function(self)
 		G.E_MANAGER:add_event(Event({
 			func = function()
+				G.GAME.showdown_twice_calculus = false
 				G.GAME.draw_hand_math = false
 				return true
 			end,
@@ -141,7 +143,6 @@ local luigis_casino = {
 
 local sequential_logic = {
 	type = 'Voucher',
-	experimental = true,
 	order = 5,
 	key = 'sequential_logic',
 	atlas = 'showdown_vouchers',
@@ -167,7 +168,6 @@ local sequential_logic = {
 
 local truth_table = {
 	type = 'Voucher',
-	experimental = true,
 	order = 6,
 	key = 'truth_table',
 	atlas = 'showdown_vouchers',
@@ -209,35 +209,6 @@ local truth_table = {
 	end,
 }
 
--- Cryptid
-
-local collatz = {
-	type = 'Voucher',
-	experimental = true,
-	order = 1000,
-	key = 'collatz',
-	atlas = 'showdown_cryptidVouchers',
-    unlocked = true,
-    requires = {'v_showdown_axiom'},
-	pos = coordinate(2, 1),
-	redeem = function(self)
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				G.GAME.mathematic_no_destroy_chance = true
-				return true
-			end,
-		}))
-	end,
-	unredeem = function(self)
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				G.GAME.mathematic_no_destroy_chance = false
-				return true
-			end,
-		}))
-	end,
-}
-
 return {
 	enabled = Showdown.config["Vouchers"],
 	list = function()
@@ -254,13 +225,9 @@ return {
 			table.insert(list, sequential_logic)
 			table.insert(list, truth_table)
 		end
-        if (SMODS.Mods["Cryptid"] or {}).can_load and Showdown.config["CrossMod"]["Cryptid"] then
-			table.insert(list, collatz)
-        end
 		return list
 	end,
 	atlases = {
 		{key = "showdown_vouchers", path = "Consumables/Vouchers.png", px = 71, py = 95},
-		{key = "showdown_cryptidVouchers", path = "CrossMod/Cryptid/Vouchers.png", px = 71, py = 95},
 	},
 }

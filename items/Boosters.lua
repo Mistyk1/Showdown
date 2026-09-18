@@ -14,7 +14,7 @@ for i = 1, 4 do
         key = 'calculus_'..(i <= 2 and i or i == 3 and 'jumbo' or 'mega'),
         config = {extra = i <= 2 and 2 or 4, choose =  i <= 3 and 1 or 2},
         create_card = function(self, card)
-            return create_card('Mathematic', G.pack_cards, nil, nil, true, true, nil, 'showdown_calculus')
+            return SMODS.create_card({ set = 'Mathematic', area = G.pack_cards, skip_materialize = true })
         end,
         ease_background_colour = function(self)
             ease_colour(G.C.DYN_UI.MAIN, G.C.SHOWDOWN_CALCULUS)
@@ -25,7 +25,9 @@ for i = 1, 4 do
         atlas = 'showdown_booster_packs',
 		kind = 'booster_calculus',
 		group_key = "k_showdown_calculus_pack",
-        in_pool = function() return (pseudorandom('calculus'..G.SEED) < 0.5) end,
+        get_weight = function (self)
+            return (i <= 2 and 0.75 or i == 3 and 0.6 or 0.4) * (G.GAME.showdown_twice_calculus and 2 or 1)
+        end,
 		update_pack = function(self, dt)
             if G.buttons then G.buttons:remove(); G.buttons = nil end
             if G.shop then G.shop.alignment.offset.y = G.ROOM.T.y+11 end
@@ -75,7 +77,7 @@ for i = 1, 4 do
         key = 'boolean_'..(i <= 2 and i or i == 3 and 'jumbo' or 'mega'),
         config = {extra = i <= 2 and 3 or 5, choose = i <= 3 and 1 or 2},
         create_card = function(self, card)
-            return create_card('Logic', G.pack_cards, nil, nil, true, true, nil, 'showdown_boolean')
+            return SMODS.create_card({ set = 'Logic', area = G.pack_cards, skip_materialize = true })
         end,
         ease_background_colour = function(self)
             ease_colour(G.C.DYN_UI.MAIN, G.C.SHOWDOWN_BOOLEAN)
@@ -86,141 +88,180 @@ for i = 1, 4 do
         atlas = 'showdown_booster_packs',
 		kind = 'booster_boolean',
 		group_key = "k_showdown_boolean_pack",
-        in_pool = function() return (pseudorandom('boolean'..G.SEED) < 0.4 * (G.GAME.showdown_twice_boolean and 2 or 1)) end,
+        get_weight = function (self)
+            return (i <= 2 and 0.3 or i == 3 and 0.2 or 0.07) * (G.GAME.showdown_twice_boolean and 2 or 1)
+        end,
     })
 end
 
 -- One of a Kind
--- Order 9 to ?
+-- Order 9 to 20
 
 for i = 1, 2 do
     table.insert(boosters.one_of_a_kind, {
 		type = 'Booster',
-		experimental = true,
 		order = 8 + i,
         key = 'peasant'..(i == 2 and '_generous' or ''),
         config = {extra = i == 2 and 5 or 3, choose = i, min_cards = i},
         loc_vars = function(self, info_queue, card)
-            return { vars = {math.min(card.ability.choose + (G.GAME.modifiers.booster_choice_mod or 0), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))), math.max(1, card.ability.min_cards + (G.GAME.modifiers.booster_size_mod or 0)), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))} }
+            return { vars = {
+                math.min(card.ability.choose + (G.GAME.modifiers.booster_choice_mod or 0) + (G.GAME.showdown_one_of_a_kind_more_selection or 0), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))),
+                math.max(1, card.ability.min_cards + (G.GAME.modifiers.booster_size_mod or 0)), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))
+            } }
         end,
         create_card = function(self, card)
-            return create_card('Joker', G.pack_cards, nil, 'Common', nil, nil, nil, 'showdown_peasant')
+            return SMODS.create_card({ set = 'Joker', area = G.pack_cards, skip_materialize = true, rarity = 'Common' })
         end,
         ease_background_colour = function(self)
-            ease_colour(G.C.DYN_UI.MAIN, G.C.SHOWDOWN_BOOLEAN)
-            ease_background_colour{new_colour = G.C.SHOWDOWN_BOOLEAN, special_colour = G.C.BLACK, contrast = 2}
+            ease_colour(G.C.DYN_UI.MAIN, G.C.RARITY[1])
+            ease_background_colour{new_colour = G.C.RARITY[1], special_colour = G.C.BLACK, contrast = 2}
         end,
         cost = (i == 2 and 7 or 5),
         pos = coordinate(8+i, 4),
         atlas = 'showdown_booster_packs',
 		kind = 'booster_peasant',
 		group_key = "k_showdown_peasant_pack",
-        in_pool = function() return (G.GAME.showdown_one_of_a_kind and pseudorandom('peasant'..G.SEED) < (i == 2 and 0.5 or 0.7)) end,
+        weight = i == 1 and 0.8 or 0.6,
     })
 end
 
 for i = 1, 2 do
     table.insert(boosters.one_of_a_kind, {
 		type = 'Booster',
-		experimental = true,
 		order = 10 + i,
         key = 'jester'..(i == 2 and '_generous' or ''),
         config = {extra = i == 2 and 5 or 3, choose = i, min_cards = i},
         loc_vars = function(self, info_queue, card)
-            return { vars = {math.min(card.ability.choose + (G.GAME.modifiers.booster_choice_mod or 0), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))), math.max(1, card.ability.min_cards + (G.GAME.modifiers.booster_size_mod or 0)), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))} }
+            return { vars = {
+                math.min(card.ability.choose + (G.GAME.modifiers.booster_choice_mod or 0) + (G.GAME.showdown_one_of_a_kind_more_selection or 0), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))),
+                math.max(1, card.ability.min_cards + (G.GAME.modifiers.booster_size_mod or 0)), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))
+            } }
         end,
         create_card = function(self, card)
-            return create_card('Joker', G.pack_cards, nil, 'Uncommon', nil, nil, nil, 'showdown_jester')
+            return SMODS.create_card({ set = 'Joker', area = G.pack_cards, skip_materialize = true, rarity = 'Uncommon' })
         end,
         ease_background_colour = function(self)
-            ease_colour(G.C.DYN_UI.MAIN, G.C.SHOWDOWN_BOOLEAN)
-            ease_background_colour{new_colour = G.C.SHOWDOWN_BOOLEAN, special_colour = G.C.BLACK, contrast = 2}
+            ease_colour(G.C.DYN_UI.MAIN, G.C.RARITY[2])
+            ease_background_colour{new_colour = G.C.RARITY[2], special_colour = G.C.BLACK, contrast = 2}
         end,
-        cost = (i == 2 and 7 or 5),
+        cost = (i == 2 and 8 or 6),
         pos = coordinate(10+i, 4),
         atlas = 'showdown_booster_packs',
 		kind = 'booster_jester',
 		group_key = "k_showdown_jester_pack",
-        in_pool = function() return (G.GAME.showdown_one_of_a_kind and pseudorandom('jester'..G.SEED) < (i == 2 and 0.4 or 0.6)) end,
+        weight = i == 1 and 0.55 or 0.4,
     })
 end
 
 for i = 1, 2 do
     table.insert(boosters.one_of_a_kind, {
 		type = 'Booster',
-		experimental = true,
 		order = 12 + i,
         key = 'knight'..(i == 2 and '_generous' or ''),
         config = {extra = i == 2 and 5 or 3, choose = i, min_cards = i},
         loc_vars = function(self, info_queue, card)
-            return { vars = {math.min(card.ability.choose + (G.GAME.modifiers.booster_choice_mod or 0), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))), math.max(1, card.ability.min_cards + (G.GAME.modifiers.booster_size_mod or 0)), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))} }
+            return { vars = {
+                math.min(card.ability.choose + (G.GAME.modifiers.booster_choice_mod or 0) + (G.GAME.showdown_one_of_a_kind_more_selection or 0), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))),
+                math.max(1, card.ability.min_cards + (G.GAME.modifiers.booster_size_mod or 0)), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))
+            } }
         end,
         create_card = function(self, card)
-            return create_card('Joker', G.pack_cards, nil, 'Rare', nil, nil, nil, 'showdown_knight')
+            return SMODS.create_card({ set = 'Joker', area = G.pack_cards, skip_materialize = true, rarity = 'Rare' })
         end,
         ease_background_colour = function(self)
-            ease_colour(G.C.DYN_UI.MAIN, G.C.SHOWDOWN_BOOLEAN)
-            ease_background_colour{new_colour = G.C.SHOWDOWN_BOOLEAN, special_colour = G.C.BLACK, contrast = 2}
+            ease_colour(G.C.DYN_UI.MAIN, G.C.RARITY[3])
+            ease_background_colour{new_colour = G.C.RARITY[3], special_colour = G.C.BLACK, contrast = 2}
         end,
-        cost = (i == 2 and 7 or 5),
+        cost = (i == 2 and 9 or 7),
         pos = coordinate(12+i, 4),
         atlas = 'showdown_booster_packs',
 		kind = 'booster_knight',
 		group_key = "k_showdown_knight_pack",
-        in_pool = function() return (G.GAME.showdown_one_of_a_kind and pseudorandom('knight'..G.SEED) < (i == 2 and 0.3 or 0.5)) end,
+        weight = i == 1 and 0.45 or 0.2,
     })
 end
 
 for i = 1, 2 do
     table.insert(boosters.one_of_a_kind, {
 		type = 'Booster',
-		experimental = true,
 		order = 14 + i,
         key = 'royal_'..i,
         config = {extra = 2, choose = 1, min_cards = 1},
         loc_vars = function(self, info_queue, card)
-            return { vars = {math.min(card.ability.choose + (G.GAME.modifiers.booster_choice_mod or 0), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))), math.max(1, card.ability.min_cards + (G.GAME.modifiers.booster_size_mod or 0)), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))} }
+            return { vars = {
+                math.min(card.ability.choose + (G.GAME.modifiers.booster_choice_mod or 0) + (G.GAME.showdown_one_of_a_kind_more_selection or 0), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))),
+                math.max(1, card.ability.min_cards + (G.GAME.modifiers.booster_size_mod or 0)), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))
+            } }
         end,
         create_card = function(self, card)
-            return create_card('Joker', G.pack_cards, true, nil, nil, nil, nil, 'showdown_royal')
+            return SMODS.create_card({ set = 'Joker', area = G.pack_cards, skip_materialize = true, rarity = 'Legendary' })
         end,
         ease_background_colour = function(self)
-            ease_colour(G.C.DYN_UI.MAIN, G.C.SHOWDOWN_BOOLEAN)
-            ease_background_colour{new_colour = G.C.SHOWDOWN_BOOLEAN, special_colour = G.C.BLACK, contrast = 2}
+            ease_colour(G.C.DYN_UI.MAIN, G.C.RARITY[4])
+            ease_background_colour{new_colour = G.C.RARITY[4], special_colour = G.C.BLACK, contrast = 2}
         end,
         cost = 14,
         pos = coordinate(14+i, 4),
         atlas = 'showdown_booster_packs',
 		kind = 'booster_royal',
 		group_key = "k_showdown_royal_pack",
-        in_pool = function() return (G.GAME.showdown_one_of_a_kind and pseudorandom('royal'..G.SEED) < 0.1) end,
+        weight = 0.05,
     })
 end
 
 for i = 1, 2 do
     table.insert(boosters.one_of_a_kind, {
 		type = 'Booster',
-		experimental = true,
 		order = 16 + i,
         key = 'tag'..(i == 2 and '_generous' or ''),
-        config = {extra = i == 2 and 5 or 3, choose = i, min_cards = i},
+        config = {extra = i == 2 and 4 or 2, choose = i == 2 and 4 or 2, min_cards = i == 2 and 1 or 0},
         loc_vars = function(self, info_queue, card)
-            return { vars = {math.min(card.ability.choose + (G.GAME.modifiers.booster_choice_mod or 0), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))), math.max(1, card.ability.min_cards + (G.GAME.modifiers.booster_size_mod or 0)), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))} }
+            return { vars = {
+                math.max(1, card.ability.min_cards + (G.GAME.modifiers.booster_size_mod or 0)), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0)),
+                math.min(card.ability.extra + (G.GAME.modifiers.booster_choice_mod or 0), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0)))
+            } }
         end,
         create_card = function(self, card)
             return card:create_tag_card()
         end,
         ease_background_colour = function(self)
-            ease_colour(G.C.DYN_UI.MAIN, G.C.SHOWDOWN_BOOLEAN)
-            ease_background_colour{new_colour = G.C.SHOWDOWN_BOOLEAN, special_colour = G.C.BLACK, contrast = 2}
+            ease_colour(G.C.DYN_UI.MAIN, G.C.IMPORTANT)
+            ease_background_colour{new_colour = G.C.IMPORTANT, special_colour = G.C.BLACK, contrast = 2}
         end,
         cost = (i == 2 and 6 or 4),
         pos = coordinate(16+i, 4),
         atlas = 'showdown_booster_packs',
 		kind = 'booster_tag',
 		group_key = "k_showdown_tag_pack",
-        --in_pool = function() return (G.GAME.showdown_one_of_a_kind and pseudorandom('tag'..G.SEED) < (i == 2 and 0.35 or 0.6)) end,
-        in_pool = function() return (G.GAME.showdown_one_of_a_kind and pseudorandom('tag'..G.SEED) < 1) end,
+        weight = i == 1 and 1 or 0.75,
+    })
+end
+
+for i = 1, 2 do
+    table.insert(boosters.one_of_a_kind, {
+		type = 'Booster',
+		order = 18 + i,
+        key = 'ticket'..(i == 2 and '_generous' or ''),
+        config = {extra = i == 2 and 5 or 3, choose = i, min_cards = i},
+        loc_vars = function(self, info_queue, card)
+            return { vars = {
+                math.min(card.ability.choose + (G.GAME.modifiers.booster_choice_mod or 0) + (G.GAME.showdown_one_of_a_kind_more_selection or 0), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))),
+                math.max(1, card.ability.min_cards + (G.GAME.modifiers.booster_size_mod or 0)), math.max(1, card.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))
+            } }
+        end,
+        create_card = function(self, card)
+            return SMODS.create_card({ set = 'Voucher', area = G.pack_cards, skip_materialize = true })
+        end,
+        ease_background_colour = function(self)
+            ease_colour(G.C.DYN_UI.MAIN, G.C.SECONDARY_SET.Voucher)
+            ease_background_colour{new_colour = G.C.SECONDARY_SET.Voucher, special_colour = G.C.BLACK, contrast = 2}
+        end,
+        cost = i == 1 and 12 or 14,
+        pos = coordinate(18+i, 4),
+        atlas = 'showdown_booster_packs',
+		kind = 'booster_ticket',
+		group_key = "k_showdown_ticket_pack",
+        weight = i == 1 and 0.45 or 0.2,
     })
 end
 
@@ -251,79 +292,36 @@ return {
 	},
     exec = function()
         local G_UIDEF_use_and_sell_buttons_ref = G.UIDEF.use_and_sell_buttons
-		function G.UIDEF.use_and_sell_buttons(card) -- Thanks Cryptid
+		function G.UIDEF.use_and_sell_buttons(card)
+            -- Tag Packs
+            if card.area and card.area == G.pack_cards and card.ability.tag_card then
+                return {
+                    n = G.UIT.ROOT, config = {padding = 0, colour = G.C.CLEAR}, nodes = {
+                        {n = G.UIT.R, config = {ref_table = card, r = 0.08, padding = 0.1, align = "bm", minw = 0.5 * card.T.w - 0.15, maxw = 0.9 * card.T.w - 0.15, minh = 0.3 * card.T.h, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'use_tag_card', func = 'can_use_tag_card'}, nodes = {
+                            {n=G.UIT.T, config={text = localize('b_select'), colour = G.C.UI.TEXT_LIGHT, scale = 0.45, shadow = true}}
+                    }},
+                }}
+            end
+
+            -- Mathematic and Logic cards
 			if (card.area == G.pack_cards and G.pack_cards) and card.ability.consumeable then
 				if card.ability.set == "Mathematic" or card.ability.set == "Logic" then
 					if (card.ability.set == "Mathematic" and G.GAME.draw_hand_math) or (card.ability.set == "Logic" and G.GAME.showdown_pull_logics) then
 						return {
-							n = G.UIT.ROOT,
-							config = { padding = -0.1, colour = G.C.CLEAR },
-							nodes = {
-								{
-									n = G.UIT.R,
-									config = {
-										ref_table = card,
-										r = 0.08,
-										padding = 0.1,
-										align = "bm",
-										minw = 0.5 * card.T.w - 0.15,
-										minh = 0.7 * card.T.h,
-										maxw = 0.7 * card.T.w - 0.15,
-										hover = true,
-										shadow = true,
-										colour = G.C.UI.BACKGROUND_INACTIVE,
-										one_press = true,
-										button = "use_card",
-										func = "can_reserve_card",
-									},
-									nodes = {
-										{
-											n = G.UIT.T,
-											config = {
-												text = localize("b_pull"),
-												colour = G.C.UI.TEXT_LIGHT,
-												scale = 0.55,
-												shadow = true,
-											},
-										},
-									},
-								},
-								{
-									n = G.UIT.R,
-									config = {
-										ref_table = card,
-										r = 0.08,
-										padding = 0.1,
-										align = "bm",
-										minw = 0.5 * card.T.w - 0.15,
-										maxw = 0.9 * card.T.w - 0.15,
-										minh = 0.1 * card.T.h,
-										hover = true,
-										shadow = true,
-										colour = G.C.UI.BACKGROUND_INACTIVE,
-										one_press = true,
-										button = "Do you know that this parameter does nothing?",
-										func = "can_use_consumable",
-									},
-									nodes = {
-										{
-											n = G.UIT.T,
-											config = {
-												text = localize("b_use"),
-												colour = G.C.UI.TEXT_LIGHT,
-												scale = 0.45,
-												shadow = true,
-											},
-										},
-									},
-								},
-								{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-								{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-								{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-								{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-								-- Betmma can't explain it, neither can I
-							},
-						}
+							n=G.UIT.ROOT, config = {padding = -0.1,  colour = G.C.CLEAR}, nodes={
+							{n=G.UIT.R, config={ref_table = card, r = 0.08, padding = 0.1, align = "bm", minw = 0.5*card.T.w - 0.15, minh = 0.7*card.T.h, maxw = 0.7*card.T.w - 0.15, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'use_card', func = 'can_use_consumeable'}, nodes={
+								{n=G.UIT.T, config={text = localize('b_use'),colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true}}
+							}},
+							{n=G.UIT.R, config={ref_table = card, r = 0.08, padding = 0.1, align = "bm", minw = 0.5*card.T.w - 0.15, maxw = 0.9*card.T.w - 0.15, minh = 0.1*card.T.h, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'Do you know that this parameter does nothing?', func = 'can_reserve_card'}, nodes={
+								{n=G.UIT.T, config={text = localize('b_pull'),colour = G.C.UI.TEXT_LIGHT, scale = 0.45, shadow = true}}
+							}},
+							{n=G.UIT.R, config = {align = "bm", w=7.7*card.T.w}},
+							{n=G.UIT.R, config = {align = "bm", w=7.7*card.T.w}},
+							{n=G.UIT.R, config = {align = "bm", w=7.7*card.T.w}},
+							{n=G.UIT.R, config = {align = "bm", w=7.7*card.T.w}},
+							-- I can't explain it
+							-- yeah me neither betmma
+						}}
 					end
 					if card.ability.set == "Mathematic" then
 						return {
