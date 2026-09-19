@@ -43,7 +43,6 @@ local minecraft_reference = make_achievement('minecraft_reference', trophies.gol
 local never_tell_odds = make_achievement('never_tell_odds', trophies.gold) -- Never tell me the odds
 local should_check = make_achievement('should_check', trophies.silver, true) -- You should get that checked
 local self_reference = make_achievement('self_reference', trophies.silver, true) -- Self-referential rule
-local fargo_proud = make_achievement('fargo_proud', trophies.gold) -- Fargo would be proud
 local everything_flush = make_achievement('everything_flush', trophies.silver, true) -- Everything is a Flush
 local double_hand = make_achievement('double_hand', trophies.gold) -- Double hand
 local who_am_i = make_achievement('who_am_i', trophies.silver) -- Who am I anyways?
@@ -96,17 +95,6 @@ return {
 	},
 	exec = function ()
 		function Showdown.versatility_description(ach)
-			ach.config.speech_bubble_align = {align='tm', offset = {x=0,y=0},parent = ach}
-			ach.children.speech_bubble = UIBox{
-				definition = Showdown.speech_bubble('versatility_desc_bruh', 'quips', nil, true),
-				config = ach.config.speech_bubble_align
-			}
-			ach.children.speech_bubble:set_role{
-				role_type = 'Major',
-				xy_bond = 'Strong',
-				r_bond = 'Strong',
-				major = ach,
-			}
 			--[[
 			if not G.PROFILES[G.SETTINGS.profile].versatility then G.PROFILES[G.SETTINGS.profile].versatility = {} end
 			local no_versatile_deck = {}
@@ -134,9 +122,11 @@ return {
 					})
 				end
 			end
+			]]--
 			ach.config.speech_bubble_align = {align='tm', offset = {x=0,y=0},parent = ach}
 			ach.children.speech_bubble = UIBox{
-				definition = Showdown.speech_bubble('versatility_desc', 'quips', nil, true, no_versatile_deck),
+				--definition = Showdown.speech_bubble('versatility_desc', 'quips', nil, true, no_versatile_deck),
+				definition = Showdown.speech_bubble('versatility_desc_bruh', 'quips', nil, true),
 				config = ach.config.speech_bubble_align
 			}
 			ach.children.speech_bubble:set_role{
@@ -145,7 +135,6 @@ return {
 				r_bond = 'Strong',
 				major = ach,
 			}
-			]]--
 		end
 	end
 }

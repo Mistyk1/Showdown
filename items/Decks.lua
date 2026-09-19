@@ -285,6 +285,29 @@ local one_of_a_kind = {
 	end
 }
 
+local one_of_a_kind_draw_step = {
+	type = 'DrawStep',
+	key = 'one_of_a_kind_draw_step',
+	order = 50,
+	func = function(self, layer)
+		local in_run_setup = not not (
+			self.ability.set == "Back"
+			or self.params.viewed_back
+			or self.params.run_select_selection_choice
+			or self.params.run_select_preview_card
+			or (self.area and (self.area.config.run_select or self.area.config.run_select_deck_preview))
+		)
+		local back = (self.ability.set == "Back" and self.config.center)
+			or (self.params.viewed_back == true and G.GAME.viewed_back and G.GAME.viewed_back.effect.center)
+			or (self.playing_card and not in_run_setup and G.GAME.selected_back_key)
+
+        if back and (back.unlocked or not in_run_setup) and back.key == 'b_showdown_one_of_a_kind' then
+            self.children.center:draw_shader('negative_shine', nil, self.ARGS.send_to_shader)
+        end
+	end,
+    conditions = { vortex = false, facing = 'back' },
+}
+
 local radar = {
 	type = 'Back',
 	experimental = true,
@@ -309,6 +332,7 @@ return {
 			starter,
 			slotted,
 			one_of_a_kind,
+			one_of_a_kind_draw_step,
 			radar,
 		}
 		if Showdown.config["Ranks"] then

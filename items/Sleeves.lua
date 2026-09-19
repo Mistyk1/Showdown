@@ -166,7 +166,7 @@ local slotted = {
 	order = 7,
 	key = "Slotted",
 	atlas = "showdown_sleeves",
-	pos = coordinate(6),
+	pos = coordinate(7),
 	unlocked = false,
 	unlock_condition = {deck = "b_showdown_Slotted", stake = "stake_showdown_onyx"},
 	loc_vars = function(self)
@@ -193,7 +193,7 @@ local one_of_a_kind = {
 	order = 8,
 	key = "one_of_a_kind",
 	atlas = "showdown_sleeves",
-	pos = coordinate(7),
+	pos = coordinate(8),
 	unlocked = false,
 	unlock_condition = {deck = "b_showdown_one_of_a_kind", stake = "stake_showdown_emerald"},
 	loc_vars = function(self)
@@ -213,6 +213,27 @@ local one_of_a_kind = {
 	end
 }
 
+local one_of_a_kind_draw_step = { -- does not work
+	type = 'DrawStep',
+	key = 'one_of_a_kind_sleeve_draw_step',
+	order = 51,
+	func = function(self, layer)
+		local in_run_setup = not not (
+			self.ability.set == "Sleeve"
+			or self.params.sleeve_card
+			or self.params.run_select_selection_choice
+			or self.params.run_select_preview_card
+			or (self.area and (self.area.config.run_select or self.area.config.run_select_deck_preview))
+		)
+		local sleeve = self.ability.set == "Sleeve" and self.config.center
+
+        if sleeve and (sleeve.unlocked or not in_run_setup) and sleeve.key == 'sleeve_showdown_one_of_a_kind' then
+            self.children.center:draw_shader('negative_shine', nil, self.ARGS.send_to_shader)
+        end
+	end,
+    conditions = { vortex = false, facing = 'front' },
+}
+
 return {
 	enabled = (SMODS.Mods["CardSleeves"] or {}).can_load and Showdown.config["CrossMod"]["CardSleeves"],
 	list = function()
@@ -220,6 +241,7 @@ return {
 			starter,
 			slotted,
 			one_of_a_kind,
+			one_of_a_kind_draw_step,
 		}
 		if Showdown.config["Ranks"] then
 			table.insert(list, mirror)
