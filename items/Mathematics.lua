@@ -40,7 +40,6 @@ local constant = {
 			local rank = _card:get_id()
 			if findInTable(rank, ranks) == -1 then
 				table.insert(ranks, rank)
-				print(rank)
 			end
 		end
 		local toEnhance = {}
@@ -49,7 +48,6 @@ local constant = {
 			if
 				findInTable(_card, cards) == -1
 				and findInTable(_card:get_id(), ranks) ~= -1
-				--and _card.ability.effect == "Base"
 			then
 				toEnhance[#toEnhance+1] = _card
 				print(_card:get_id())
@@ -58,6 +56,8 @@ local constant = {
 		for _, _card in pairs(cards) do
 			event({trigger = 'after', delay = 0.1, func = function() math_destroy_card(_card) return true end })
 		end
+        SMODS.calculate_context({ remove_playing_cards = true, removed = cards })
+
         delay(0.2)
 		for i=1, #toEnhance do flipCard(toEnhance[i], i, #toEnhance) end
         delay(0.2)
@@ -92,6 +92,7 @@ local variable = {
 			return true end })
 			money = money + math.random(self.config.minMoney, self.config.maxMoney)
         end
+        SMODS.calculate_context({ remove_playing_cards = true, removed = G.hand.highlighted })
 		delay(0.6)
 		if money > 0 then ease_dollars(money) end
     end
@@ -119,6 +120,7 @@ local func = {
             event({trigger = 'after', delay = 0.1, func = function()
 				local _card = pseudorandom_element(cards, pseudoseed('showdown_mathematic'))
 				if math_destroy_card(_card) then
+        			SMODS.calculate_context({ remove_playing_cards = true, removed = { _card } })
 					table.remove(G.hand.highlighted, findInTable(_card, G.hand.highlighted))
 					table.remove(cards, findInTable(_card, cards))
 				end
@@ -161,6 +163,7 @@ local shape = {
             event({trigger = 'after', delay = 0.1, func = function()
 				local _card = pseudorandom_element(cards, pseudoseed('seed'))
 				if math_destroy_card(_card, {silent = i == 1}) then
+        			SMODS.calculate_context({ remove_playing_cards = true, removed = { _card } })
 					table.remove(cards, findInTable(_card, cards))
 					table.remove(G.hand.highlighted, findInTable(_card, G.hand.highlighted))
 				end
@@ -198,7 +201,14 @@ local vector = {
     use = function()
 		G.GAME.showdown_vector = (G.GAME.showdown_vector or 0) + #G.hand.highlighted
 		for i=#G.hand.highlighted, 1, -1 do
-            event({trigger = 'after', delay = 0.1, func = function() math_destroy_card(G.hand.highlighted[i], {nil, i == #G.hand.highlighted}) return true end })
+            event({
+				trigger = 'after',
+				delay = 0.1, func = function()
+					math_destroy_card(G.hand.highlighted[i], {nil, i == #G.hand.highlighted})
+        			SMODS.calculate_context({ remove_playing_cards = true, removed = { G.hand.highlighted[i] } })
+					return true
+				end
+			})
         end
     end
 }
@@ -231,7 +241,10 @@ local probability = {
 		for i=#G.hand.highlighted, 1, -1 do
             event({trigger = 'after', delay = 0.1, func = function()
 				if G.hand.highlighted ~= nil and SMODS.pseudorandom_probability(card, 'showdown_probability', self.config.extra.initial_odds, card.ability.extra.odds) then
-                	if math_destroy_card(G.hand.highlighted[i], {nil, first_dissolved}) then first_dissolved = false end
+                	if math_destroy_card(G.hand.highlighted[i], {nil, first_dissolved}) then
+						first_dissolved = false
+						SMODS.calculate_context({ remove_playing_cards = true, removed = { G.hand.highlighted[i] } })
+					end
 					for k, v in pairs(joker.ability) do
 						if
 							(type(v) == "number" or type(v) == "table")
@@ -297,7 +310,10 @@ local sequence = {
 		update_hand_text({sound = 'button', volume = 0.7, pitch = 1.1, delay = 0}, {mult = 0, chips = 0, handname = '', level = ''})
 		for i=#G.hand.highlighted, 1, -1 do
             event({trigger = 'after', delay = 0.1, func = function()
-                if G.hand.highlighted ~= nil then math_destroy_card(G.hand.highlighted[i], {nil, i == 1}); end
+                if G.hand.highlighted ~= nil then
+					math_destroy_card(G.hand.highlighted[i], {nil, i == 1})
+					SMODS.calculate_context({ remove_playing_cards = true, removed = { G.hand.highlighted[i] } })
+				end
             return true end })
         end
     end
@@ -324,6 +340,7 @@ local operation = {
 		event({trigger = 'after', delay = 0.1, func = function()
 			math_destroy_card(card1, {nil, true})
 			math_destroy_card(card2)
+			SMODS.calculate_context({ remove_playing_cards = true, removed = { card1, card2 } })
 		return true end })
 		delay(0.2)
 		event({trigger = 'after', delay = 0.7, func = function()

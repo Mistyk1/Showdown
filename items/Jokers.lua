@@ -731,6 +731,7 @@ local sinful_joker = {
             end
             for i=1, #jokers do
                 jokers[i].ability.extra.s_mult = jokers[i].ability.extra.s_mult + card.ability.extra.scaling
+                --
             end
             if #jokers > 0 then
                 return {
@@ -2246,7 +2247,7 @@ local atom = {
     end
 }
 
-local stencil = {
+local metal_stencil = {
     type = 'Joker',
     order = 68,
     key = 'stencil',
@@ -3516,7 +3517,7 @@ return {
             jimbocoin,
             thorn_photograph,
             atom,
-            stencil,
+            metal_stencil,
             o_fortuna,
             ena,
             mouthwash,

@@ -262,12 +262,6 @@ return {
 			SMODShas_any_suitRef(card)
 		end
 
-		local Cardis_suit_ref = Card.is_suit
-		function Card:is_suit(suit, bypass_debuff, flush_calc)
-			if Showdown.is_zero(self) then return true end
-			Cardis_suit_ref(card)
-		end
-
 		function Showdown.is_counterpart(card)
 			return next(find_joker("hiding_details")) or (SMODS.Ranks[card.base.value] and SMODS.Ranks[card.base.value].counterpart and SMODS.Ranks[card.base.value].counterpart.is)
 		end

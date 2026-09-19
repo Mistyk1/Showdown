@@ -298,26 +298,7 @@ table.insert(def_list.jokers, {
     end
 })
 
-table.insert(def_list.jokers, {
-    key = 'sinful_joker',
-    text = {
-        { text = "+" },
-        { ref_table = "card.joker_display_values", ref_value = "mult", retrigger_type = "mult" }
-    },
-    text_config = { colour = G.C.MULT },
-    calc_function = function(card)
-        local mult = 0
-        if G.jokers then
-            for _, joker_card in ipairs(G.jokers.cards) do
-                local name = joker_card.ability.name
-                if name == 'Greedy Joker' or name == 'Lusty Joker' or name == 'Wrathful Joker' or name == 'Gluttonous Joker' then
-                    mult = mult + card.ability.extra.scaling
-                end
-            end
-        end
-        card.joker_display_values.mult = mult
-    end
-})
+--table.insert(def_list.jokers, { key = 'sinful_joker' })
 
 --table.insert(def_list.jokers, { key = 'egg_drawing' })
 
@@ -788,6 +769,9 @@ table.insert(def_list.jokers, {
 
 table.insert(def_list.jokers, {
     key = 'stencil',
+    text = {
+        { ref_table = "card.ability.extra", ref_value = "seals_to_put", colour = G.C.ORANGE },
+    },
     reminder_text = {
         { text = "(" },
         { ref_table = "card.joker_display_values", ref_value = "scaling" },
