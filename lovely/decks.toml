@@ -30,7 +30,7 @@ G.GAME.current_round.used_packs[i] = get_pack('shop_pack', (G.GAME.first_booster
 # Calculus deck forces first booster in shop to be a Calculus booster, part 2/2
 [[patches]]
 [patches.pattern]
-target = "functions/common_events.lua"
+target = '''=[SMODS _ "src/overrides.lua"]'''
 pattern = "if not G.GAME.first_shop_buffoon and not G.GAME.banned_keys['p_buffoon_normal_1'] then"
 position = "at"
 match_indent = true
