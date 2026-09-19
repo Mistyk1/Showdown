@@ -433,7 +433,7 @@ local brick = {
 	boss = { min = 2 },
 	mult = 2,
 	recalc_debuff = function(self, card, from_blind)
-		local triggered = (card.ability.set == 'Default' or card.ability.set == 'Enhanced') and not SMODS.is_counterpart(card)
+		local triggered = (card.ability.set == 'Default' or card.ability.set == 'Enhanced') and not Showdown.is_counterpart(card)
 		self.triggered = triggered
 		return triggered
 	end,
@@ -441,7 +441,7 @@ local brick = {
 		local counterparts = 0
 		if G.deck then
 			for _, card in ipairs(G.deck.cards) do
-				if SMODS.is_counterpart(card) then counterparts = counterparts + 1 end
+				if Showdown.is_counterpart(card) then counterparts = counterparts + 1 end
 			end
 		end
 		return counterparts >= 10

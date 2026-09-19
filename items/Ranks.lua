@@ -254,19 +254,25 @@ return {
 		local SMODShas_any_suitRef = SMODS.has_any_suit
 		function SMODS.has_any_suit(card)
 			if
-				SMODS.is_zero(card)
-				or (next(find_joker('sim_card')) and SMODS.is_counterpart(card))
+				Showdown.is_zero(card)
+				or (next(find_joker('sim_card')) and Showdown.is_counterpart(card))
 			then
 				return true
 			end
 			SMODShas_any_suitRef(card)
 		end
 
-		function SMODS.is_counterpart(card)
+		local Cardis_suit_ref = Card.is_suit
+		function Card:is_suit(suit, bypass_debuff, flush_calc)
+			if Showdown.is_zero(self) then return true end
+			Cardis_suit_ref(card)
+		end
+
+		function Showdown.is_counterpart(card)
 			return next(find_joker("hiding_details")) or (SMODS.Ranks[card.base.value] and SMODS.Ranks[card.base.value].counterpart and SMODS.Ranks[card.base.value].counterpart.is)
 		end
 
-		function SMODS.is_zero(card)
+		function Showdown.is_zero(card)
 			return card.base.id == 1 or card.base.value == 'showdown_Zero'
 		end
 

@@ -23,7 +23,7 @@ pattern = 'context.other_card:get_id()%2 == 0'
 position = 'at'
 match_indent = true
 payload = '''
-(context.other_card:get_id()%2 == 0 or SMODS.is_zero(context.other_card))
+(context.other_card:get_id()%2 == 0 or Showdown.is_zero(context.other_card))
 '''
 
 # Counterpart and 0 card descriptions, part 1/3
@@ -71,7 +71,7 @@ position = "after"
 match_indent = true
 payload = '''
 act_as = self.base.value and SMODS.Ranks[self.base.value].counterpart and SMODS.Ranks[self.base.value].counterpart.is and SMODS.Ranks[self.base.value].counterpart.value,
-default_wild = SMODS.is_zero(self),
+default_wild = Showdown.is_zero(self),
 '''
 
 # 0 Card name
@@ -97,22 +97,11 @@ pattern = "if G.STATE == G.STATES.SELECTING_HAND or G.STATE == G.STATES.TAROT_PA
 position = "before"
 match_indent = true
 payload = '''
-if (self.ability.name == 'The Fool' or self.ability.consumeable.suit_conv) and G.hand and G.hand.highlighted and #G.hand.highlighted >= 1 and #G.hand.highlighted <= self.ability.max_highlighted then
+if (self.ability.consumeable.mod_conv == 'm_wild' or self.ability.consumeable.suit_conv) and G.hand and G.hand.highlighted and #G.hand.highlighted >= 1 and #G.hand.highlighted <= self.ability.max_highlighted then
     for i=1, #G.hand.highlighted do
-        if SMODS.is_zero(G.hand.highlighted[i]) then return false end
+        if Showdown.is_zero(G.hand.highlighted[i]) then return false end
     end
 end
-'''
-
-# 0 count as all suits even when debuffed
-[[patches]]
-[patches.pattern]
-target = "card.lua"
-pattern = '''function Card:is_suit(suit, bypass_debuff, flush_calc)'''
-position = "after"
-match_indent = true
-payload = '''
-if SMODS.is_zero(self) then return true end
 '''
 
 # Secret ranks counters are not shown if not in deck

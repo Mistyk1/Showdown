@@ -20,7 +20,7 @@ local versatile_joker = {
     }},
     loc_vars = function(self, info_queue, card)
         if G.STAGE == G.STAGES.RUN then
-            local loc = { key = get_versatile('desc') }
+            local loc = { key = Showdown.get_versatile('desc') }
             if G.GAME.selected_back.name == 'Red Deck' then
                 loc.vars = { card.ability.extra.money }
             elseif G.GAME.selected_back.name == 'Blue Deck' then
@@ -55,7 +55,7 @@ local versatile_joker = {
     unlocked = false,
     unlock_condition = {type = 'win_stake', stake = 4},
     calculate = function(self, card, context)
-        if get_versatile('calculate') then return get_versatile('calculate')(self, card, context) end
+        if Showdown.get_versatile('calculate') then return Showdown.get_versatile('calculate')(self, card, context) end
     end,
     add_to_deck = function(self, card, from_debuff)
         if not G.PROFILES[G.SETTINGS.profile].versatility then G.PROFILES[G.SETTINGS.profile].versatility = {} end
@@ -63,14 +63,14 @@ local versatile_joker = {
             table.insert(G.PROFILES[G.SETTINGS.profile].versatility, G.GAME.selected_back.name)
         end
         check_versatility()
-        if get_versatile('add_to_deck') then return get_versatile('add_to_deck')(self, card, from_debuff) end
+        if Showdown.get_versatile('add_to_deck') then return Showdown.get_versatile('add_to_deck')(self, card, from_debuff) end
     end,
     remove_from_deck = function(self, card, from_debuff)
-        if get_versatile('remove_from_deck') then return get_versatile('remove_from_deck')(self, card, from_debuff) end
+        if Showdown.get_versatile('remove_from_deck') then return Showdown.get_versatile('remove_from_deck')(self, card, from_debuff) end
     end,
     update = function(self, card, front)
         if G.STAGE == G.STAGES.RUN then
-            local pos, blueprint = get_versatile('pos'), get_versatile('blueprint')
+            local pos, blueprint = Showdown.get_versatile('pos'), Showdown.get_versatile('blueprint')
             if not (card.ability.sprite.x == pos.x and card.ability.sprite.y == pos.y) or not card.ability.sprite.blueprint == blueprint then
                 card.ability.sprite.x = pos.x
                 card.ability.sprite.y = pos.y
@@ -86,8 +86,8 @@ local versatile_joker = {
         end
     end,
     load = function(self, card, card_table, other_card)
-        card.config.center.pos = get_versatile('pos')
-        card.config.center.blueprint_compat = get_versatile('blueprint')
+        card.config.center.pos = Showdown.get_versatile('pos')
+        card.config.center.blueprint_compat = Showdown.get_versatile('blueprint')
         card:set_sprites(card.config.center)
     end
 }
@@ -435,7 +435,7 @@ return {
         ---Get deck specifications for Versatile Joker
         ---@param type string
         ---@return string | table | boolean | function
-        function get_versatile(type)
+        function Showdown.get_versatile(type)
             local name = G.GAME.selected_back.name
             if Showdown.versatile[name] then
                 return Showdown.versatile[name][type]
@@ -453,24 +453,19 @@ return {
         end
 
         local add_tagRef = add_tag
+        local function double_tag(_tag, versatile)
+            if _tag.key == 'tag_double' and #versatile > 0 and G.GAME.selected_back.name == 'Anaglyph Deck' then
+                local bonusTag = 0
+                for i=1, #versatile do
+                    bonusTag = bonusTag + versatile[i].ability.extra.double_tag
+                end
+                if bonusTag >= 1 then for _=1, bonusTag do add_tagRef(Tag('tag_double')) end end
+            end
+        end
         function add_tag(_tag)
             add_tagRef(_tag)
-            local versatile = find_joker('versatile_joker')
-            if _tag.key == 'tag_double' and #versatile > 0 and G.GAME.selected_back.name == 'Anaglyph Deck' then
-                local bonusTag = 0
-                for i=1, #versatile do
-                    bonusTag = bonusTag + versatile[i].ability.extra.double_tag
-                end
-                if bonusTag >= 1 then for _=1, bonusTag do add_tagRef(Tag('tag_double')) end end
-            end
-            versatile = find_joker('versatile_joker_all_in_one')
-            if _tag.key == 'tag_double' and #versatile > 0 and G.GAME.selected_back.name == 'Anaglyph Deck' then
-                local bonusTag = 0
-                for i=1, #versatile do
-                    bonusTag = bonusTag + versatile[i].ability.extra.double_tag
-                end
-                if bonusTag >= 1 then for _=1, bonusTag do add_tagRef(Tag('tag_double')) end end
-            end
+            double_tag(_tag, find_joker('versatile_joker'))
+            double_tag(_tag, find_joker('versatile_joker_all_in_one'))
         end
 	end,
     order = 1,

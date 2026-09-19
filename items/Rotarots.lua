@@ -224,7 +224,7 @@ local rot_beast = {
 	can_use = function(self)
         if G.hand and #G.hand.highlighted == 1 then
             local highlighted_card = G.hand.highlighted[1]
-            return (highlighted_card:is_suit('bunc_Fleurons') or highlighted_card:is_suit('bunc_Halberds')) and SMODS.is_counterpart(highlighted_card)
+            return (highlighted_card:is_suit('bunc_Fleurons') or highlighted_card:is_suit('bunc_Halberds')) and Showdown.is_counterpart(highlighted_card)
         end
         return false
     end,

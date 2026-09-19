@@ -2994,7 +2994,11 @@ return {
             k_can_reroll="Can reroll",
             k_cannot_reroll="Cannot reroll",
             k_bye_bye = "Bye Bye!",
+            k_enhanced = "Enhanced",
             k_consumeable_type = "Consumable Type",
+            k_left = "left",
+            k_right = "right",
+
             b_mathematic_cards = "Mathematic Cards",
             b_logic_cards = "Logic Cards",
             b_pull = "PULL",

@@ -115,7 +115,7 @@ table.insert(def_list.jokers, {
         local count = 0
         for _, playing_card in ipairs(G.hand.cards) do
             if playing_hand or not playing_card.highlighted then
-                if not (playing_card.facing == 'back') and not playing_card.debuff and SMODS.is_zero(playing_card) then
+                if not (playing_card.facing == 'back') and not playing_card.debuff and Showdown.is_zero(playing_card) then
                     count = count + JokerDisplay.calculate_card_triggers(playing_card, nil, true)
                 end
             end
@@ -146,7 +146,7 @@ table.insert(def_list.jokers, {
     key = 'mirror',
     retrigger_function = function(playing_card, scoring_hand, held_in_hand, joker_card)
         --if held_in_hand then return 0 end
-        return (SMODS.is_zero(playing_card) or SMODS.is_counterpart(playing_card)) and
+        return (Showdown.is_zero(playing_card) or Showdown.is_counterpart(playing_card)) and
             joker_card.ability.extra.retrigger * JokerDisplay.calculate_joker_triggers(joker_card) or 0
     end
 })
@@ -193,7 +193,7 @@ table.insert(def_list.jokers, {
             local text, _, scoring_hand = JokerDisplay.evaluate_hand()
             if text ~= 'Unknown' then
                 for _, scoring_card in pairs(scoring_hand) do
-                    if SMODS.is_zero(scoring_card) then
+                    if Showdown.is_zero(scoring_card) then
                         count = count + JokerDisplay.calculate_card_triggers(scoring_card, nil, true)
                     end
                 end
@@ -245,7 +245,7 @@ table.insert(def_list.jokers, {
         local text, _, scoring_hand = JokerDisplay.evaluate_hand()
         if text ~= 'Unknown' then
             for _, scoring_card in pairs(scoring_hand) do
-                if SMODS.is_zero(scoring_card) then
+                if Showdown.is_zero(scoring_card) then
                     mult = card.ability.extra.mult
                 end
             end
@@ -361,10 +361,10 @@ table.insert(def_list.jokers, { -- might need a rework
             local idx = findInTable(playing_card, hand)
             local rep = 0
             if idx > -1 then
-                if idx > 1 and SMODS.is_zero(hand[idx-1]) then
+                if idx > 1 and Showdown.is_zero(hand[idx-1]) then
                     rep = rep + 1
                 end
-                if idx < #hand and SMODS.is_zero(hand[idx+1]) then
+                if idx < #hand and Showdown.is_zero(hand[idx+1]) then
                     rep = rep + 1
                 end
             end
@@ -646,29 +646,50 @@ table.insert(def_list.jokers, {
 
 table.insert(def_list.jokers, {
     key = 'matplotlib',
-    text = {
-        { text = "+", colour = G.C.CHIPS },
-        { ref_table = "card.joker_display_values", ref_value = "chips", retrigger_type = "mult", colour = G.C.CHIPS },
-        { text = " +", colour = G.C.MULT },
-        { ref_table = "card.joker_display_values", ref_value = "mult", retrigger_type = "mult", colour = G.C.MULT }
+    extra = {
+        {
+            { text = "(" },
+            { ref_table = "card.joker_display_values", ref_value = "count_left", colour = G.C.ORANGE },
+            { text = " on " },
+            { ref_table = "card.joker_display_values", ref_value = "localized_left_text", colour = G.C.CHIPS },
+            { text = ")" },
+        },
+        {
+            { text = "(" },
+            { ref_table = "card.joker_display_values", ref_value = "count_right", colour = G.C.ORANGE },
+            { text = " on " },
+            { ref_table = "card.joker_display_values", ref_value = "localized_right_text", colour = G.C.MULT },
+            { text = ")" },
+        },
+        {
+            { text = "" }
+        },
+    },
+    extra_config = {
+        colour = G.C.UI.TEXT_INACTIVE,
+        scale = 0.3
     },
     calc_function = function(card)
-        local chips_count = 0
-        local mult_count = 0
-        local other_way = false
+        local left = 0
+        local right = 0
         if G.jokers then
             for _, joker_card in ipairs(G.jokers.cards) do
-                if card == joker_card then
-                    other_way = true
-                elseif other_way then
-                    mult_count = mult_count + 1
-                else
-                    chips_count = chips_count + 1
+                if card ~= joker_card then
+                    if joker_card.rank > card.rank then
+                        right = right + 1
+                    else
+                        left = left + 1
+                    end
                 end
             end
         end
-        card.joker_display_values.chips = chips_count * card.ability.extra.chips
-        card.joker_display_values.mult = mult_count * card.ability.extra.mult
+        card.joker_display_values.count_left = left
+        card.joker_display_values.count_right = right
+        card.joker_display_values.localized_left_text = localize("k_left")
+        card.joker_display_values.localized_right_text = localize("k_right")
+    end,
+    mod_function = function(card, mod_joker)
+        return { mult = card.rank > mod_joker.rank and mod_joker.ability.extra.mult, chips = card.rank < mod_joker.rank and mod_joker.ability.extra.chips }
     end
 })
 
@@ -808,7 +829,7 @@ table.insert(def_list.jokers, {
         local text, _, scoring_hand = JokerDisplay.evaluate_hand()
         if text ~= 'Unknown' then
             for _, scoring_card in pairs(scoring_hand) do
-                if SMODS.is_counterpart(scoring_card) then
+                if Showdown.is_counterpart(scoring_card) then
                     if scoring_card:is_face() then
                         count_face = count_face + JokerDisplay.calculate_card_triggers(scoring_card, scoring_hand)
                     else
@@ -1179,7 +1200,7 @@ table.insert(def_list.blinds, {
     trigger_function = function(blind, text, poker_hands, scoring_hand, full_hand)
         if text ~= 'Unknown' then
             for _, scoring_card in pairs(scoring_hand) do
-                if scoring_card and not SMODS.is_counterpart(scoring_card) then
+                if scoring_card and not Showdown.is_counterpart(scoring_card) then
                     return true
                 end
             end

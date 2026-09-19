@@ -64,7 +64,7 @@ local pinpoint = {
         if args.type == 'hand_contents' then
             local zero = 0
             for j = 1, #args.cards do
-                if SMODS.is_zero(args.cards[j]) then
+                if Showdown.is_zero(args.cards[j]) then
                     zero = zero + 1
                 end
             end
@@ -74,7 +74,7 @@ local pinpoint = {
         end
     end,
     calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.hand and context.full_hand and not context.other_card.debuff and SMODS.is_zero(context.other_card) then
+        if context.individual and context.cardarea == G.hand and context.full_hand and not context.other_card.debuff and Showdown.is_zero(context.other_card) then
             return {
                 x_chips = card.ability.extra.x_chips,
                 card = context.other_card
@@ -105,14 +105,14 @@ local math_teacher = {
             if next(eval['Three of a Kind']) then
                 local counterpart = 0
                 for j = 1, #args.cards do
-                    if SMODS.is_counterpart(args.cards[j]) then counterpart = counterpart + 1 end
+                    if Showdown.is_counterpart(args.cards[j]) then counterpart = counterpart + 1 end
                 end
                 if counterpart >= 3 then unlock_card(self) end
             end
         end
     end,
     calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.play and SMODS.is_counterpart(context.other_card) and not context.blueprint then
+        if context.individual and context.cardarea == G.play and Showdown.is_counterpart(context.other_card) and not context.blueprint then
             card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chip_mod
             forced_message(localize('k_upgrade_ex'), card, G.C.CHIPS, true)
         end
@@ -140,7 +140,7 @@ local gruyere = {
     rarity = 1, cost = 4,
     blueprint_compat = true, perishable_compat = false, eternal_compat = true,
     calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.play and SMODS.is_zero(context.other_card) and not context.blueprint then
+        if context.individual and context.cardarea == G.play and Showdown.is_zero(context.other_card) and not context.blueprint then
             card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod
             forced_message(localize('k_upgrade_ex'), card, G.C.MULT, true)
         end
@@ -170,7 +170,7 @@ local mirror = {
     calculate = function(self, card, context)
         if context.repetition then
             print(context.other_card.base.value..": "..context.other_card:get_id())
-			if SMODS.is_zero(context.other_card) or SMODS.is_counterpart(context.other_card) then
+			if Showdown.is_zero(context.other_card) or Showdown.is_counterpart(context.other_card) then
 				return {
 					message = localize("k_again_ex"),
 					repetitions = card.ability.extra.retrigger,
@@ -337,7 +337,7 @@ local spotted_joker = {
     rarity = 1, cost = 4,
     blueprint_compat = true, perishable_compat = false, eternal_compat = true,
     calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.play and SMODS.is_zero(context.other_card) then
+        if context.individual and context.cardarea == G.play and Showdown.is_zero(context.other_card) then
             card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chip_mod
             return {
                 chips = card.ability.extra.chips
@@ -443,7 +443,7 @@ local empty_joker = {
     calculate = function(self, card, context)
         if context.joker_main then
             for i=1, #context.scoring_hand do
-                if SMODS.is_zero(context.scoring_hand[i]) then
+                if Showdown.is_zero(context.scoring_hand[i]) then
                     return {
                         message = localize({ type = "variable", key = "a_mult", vars = { card.ability.extra.mult } }),
                         mult_mod = card.ability.extra.mult,
@@ -984,10 +984,10 @@ local billiard = {
             local idx = findInTable(context.other_card, G.play.cards)
             if idx > -1 then
                 local rep = 0
-                if idx > 1 and SMODS.is_zero(G.play.cards[idx-1]) then
+                if idx > 1 and Showdown.is_zero(G.play.cards[idx-1]) then
                     rep = rep + 1
                 end
-                if idx < #G.play.cards and SMODS.is_zero(G.play.cards[idx+1]) then
+                if idx < #G.play.cards and Showdown.is_zero(G.play.cards[idx+1]) then
                     rep = rep + 1
                 end
                 if rep > 0 then
@@ -1170,7 +1170,7 @@ local world_map = {
                     local zero = false
                     for i=1, #context.scoring_hand do
                         local _card = context.scoring_hand[i]
-                        if SMODS.is_zero(_card) then zero = true break end
+                        if Showdown.is_zero(_card) then zero = true break end
                     end
                     if zero then
                         card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_scale
@@ -1983,7 +1983,7 @@ local matplotlib = {
                     return true
                 end
             }))
-            if context.other_joker.rank < card.rank then
+            if context.other_joker.rank > card.rank then
                 return {
                     message = localize{type='variable',key='a_mult',vars={card.ability.extra.mult}},
                     mult_mod = card.ability.extra.mult
@@ -2015,7 +2015,7 @@ local cake = {
     blueprint_compat = true, perishable_compat = false, eternal_compat = true,
     calculate = function(self, card, context)
         if not context.blueprint and context.individual and context.cardarea == G.hand and context.full_hand then
-            if SMODS.is_counterpart(context.other_card) then
+            if Showdown.is_counterpart(context.other_card) then
                 card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_scale
                 return {
                     message = localize('k_upgrade_ex'),
@@ -2358,7 +2358,7 @@ local floating_point = {
     rarity = 1, cost = 4,
     blueprint_compat = true, perishable_compat = true, eternal_compat = true,
     calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.play and SMODS.is_counterpart(context.other_card) then
+        if context.individual and context.cardarea == G.play and Showdown.is_counterpart(context.other_card) then
             return {
                 dollars = context.other_card:is_face() and card.ability.extra.money_face or card.ability.extra.money,
                 card = context.other_card
@@ -2428,7 +2428,7 @@ local binary_10111 = {
                     end
                 return true
             end}))
-        elseif context.end_of_round and G.GAME.blind.boss and not context.blueprint then
+        elseif context.end_of_round and not context.repetition and not context.individual and G.GAME.blind.boss and not context.blueprint then
             local eligible_types = {}
             for type, _ in pairs(SMODS.ConsumableTypes) do
                 if Showdown.binary_10111_joker_consumeable_type_colours[type] and type ~= card.ability.extra.consumeable_type then
@@ -2511,16 +2511,16 @@ local esotericism = {
     rarity = 1, cost = 4,
     blueprint_compat = true, perishable_compat = true, eternal_compat = true,
     calculate = function(self, card, context)
-        if context.end_of_round and G.GAME.blind.boss then
-            G.E_MANAGER:add_event(Event({
-                func = function()
-                    if G.consumeables.config.card_limit > #G.consumeables.cards then
-                        local _card = SMODS.create_card({set = SMODS.pseudorandom_probability(card, 'esotericism', 1, 3) and 'Spectral' or 'Tarot', area = G.consumeables})
-                        _card:add_to_deck()
-                        G.consumeables:emplace(_card)
-                    end
-                return true
-            end}))
+        if context.end_of_round and not context.repetition and not context.individual and G.GAME.blind.boss and G.consumeables.config.card_limit > #G.consumeables.cards then
+            local is_spectral = SMODS.pseudorandom_probability(card, 'esotericism', 1, 3, nil, true)
+            local _card = SMODS.create_card({set = is_spectral and 'Spectral' or 'Tarot', area = G.consumeables})
+            _card:add_to_deck()
+            G.consumeables:emplace(_card)
+            return {
+                message = is_spectral and localize('k_plus_spectral') or localize('k_plus_tarot'),
+                colour = is_spectral and G.C.SECONDARY_SET.Spectral or G.C.SECONDARY_SET.Tarot,
+                card = card
+            }
         end
     end
 }
@@ -2739,7 +2739,7 @@ local brain_battery = {
                     colour = G.C.CHIPS,
                     card = card
                 }
-            elseif context.end_of_round and card.ability.extra.x_chips > 1 then
+            elseif context.end_of_round and not context.repetition and not context.individual and card.ability.extra.x_chips > 1 then
                 card.ability.extra.x_chips = 1
                 return {
                     message = localize('k_reset'),
@@ -2776,7 +2776,7 @@ local warped_joker = {
             elseif context.before and not context.blueprint then
                 local all_count = true
                 for i=1, #G.hand.cards do
-                    all_count = all_count and SMODS.is_counterpart(G.hand.cards[i])
+                    all_count = all_count and Showdown.is_counterpart(G.hand.cards[i])
                 end
                 if all_count then
                     card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_scale
@@ -2831,7 +2831,7 @@ local rules_card = {
     calculate = function(self, card, context)
         if G.rules_card_jokers then
             if not context.blueprint then
-                if context.end_of_round and G.GAME.sold_jokers and not card.ability.extra.created_this_round then
+                if context.end_of_round and not context.repetition and not context.individual and G.GAME.sold_jokers and not card.ability.extra.created_this_round then
                     local old_joker = card.ability.extra.copied_joker
                     card.ability.extra.copied_joker = pseudorandom_element(G.GAME.sold_jokers, pseudoseed('rules_card'))
                     if card.ability.extra.copied_joker == 'j_showdown_rules_card' then
@@ -3334,14 +3334,7 @@ local gummy_worms = {
     blueprint_compat = false, perishable_compat = false, eternal_compat = false,
     calculate = function(self, card, context)
         if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
-            if card.ability.extra.x_chips - card.ability.extra.x_chips_reduction <= 1 then 
-                SMODS.destroy_cards(card, nil, nil, true)
-                return {
-                    card = card,
-                    message = localize('k_eaten_ex'),
-                    colour = G.C.FILTER
-                }
-            else
+            if card.ability.extra.x_chips - card.ability.extra.x_chips_reduction > 1.001 then
                 SMODS.scale_card(card, {
                     ref_table = card.ability.extra,
                     ref_value = "x_chips",
@@ -3350,6 +3343,13 @@ local gummy_worms = {
                     message_key = 'a_xchips_minus',
                     colour = G.C.CHIPS
                 })
+            else
+                SMODS.destroy_cards(card, nil, nil, true)
+                return {
+                    card = card,
+                    message = localize('k_eaten_ex'),
+                    colour = G.C.FILTER
+                }
             end
         end
         if context.joker_main then
@@ -3730,11 +3730,11 @@ return {
             local highlighted = {}
             local has_nothing_matter = next(find_joker('nothing_matter'))
             for _, _card in pairs(area.highlighted) do
-                if not (SMODS.is_zero(_card) and has_nothing_matter) then
+                if not (Showdown.is_zero(_card) and has_nothing_matter) then
                     table.insert(highlighted, _card)
                 end
             end
-            if not (SMODS.is_zero(card) and has_nothing_matter) then
+            if not (Showdown.is_zero(card) and has_nothing_matter) then
                 table.insert(highlighted, card)
             end
             return #highlighted >= area.config.highlighted_limit + 1
@@ -3744,7 +3744,7 @@ return {
             local highlighted = {}
             local has_nothing_matter = next(find_joker('nothing_matter'))
             for _, card in pairs(G.hand.highlighted) do
-                if not (SMODS.is_zero(card) and has_nothing_matter) then
+                if not (Showdown.is_zero(card) and has_nothing_matter) then
                     table.insert(highlighted, card)
                 end
             end
@@ -3755,7 +3755,7 @@ return {
             local highlighted = {}
             local has_nothing_matter = next(find_joker('nothing_matter'))
             for _, card in pairs(G.hand.highlighted) do
-                if not (SMODS.is_zero(card) and has_nothing_matter) then
+                if not (Showdown.is_zero(card) and has_nothing_matter) then
                     table.insert(highlighted, card)
                 end
             end
@@ -3809,6 +3809,17 @@ return {
                 end
             end
             return poll_obj_ref(args)
+        end
+
+        local set_cost_value_ref = Card.set_cost_value
+        function Card:set_cost_value()
+            set_cost_value_ref(self)
+            if
+                (self.ability.set == 'Spectral' or (self.ability.set == 'Booster' and self.ability.name:find('Spectral'))) and
+                ((#find_joker('versatile_joker') > 0 and G.GAME.selected_back.name == 'Ghost Deck') or #find_joker('versatile_joker_all_in_one') > 0)
+            then
+                self.cost = 0
+            end
         end
 
         Showdown.tag_related_joker['j_diet_cola'] = true

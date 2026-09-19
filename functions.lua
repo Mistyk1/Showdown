@@ -213,7 +213,7 @@ end
 
 local Cardchange_suitRef = Card.change_suit
 function Card:change_suit(new_suit)
-	if SMODS.is_zero(self) then G.GAME.blind:debuff_card(self)
+	if Showdown.is_zero(self) then G.GAME.blind:debuff_card(self)
 	else Cardchange_suitRef(self, new_suit) end
 end
 

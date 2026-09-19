@@ -427,17 +427,6 @@ if v.base.id > 0 then
 end
 '''
 
-# Versatile Joker (Ghost Deck)
-[[patches]]
-[patches.pattern]
-target = "card.lua"
-match_indent = true
-pattern = "if (self.ability.set == 'Planet' or (self.ability.set == 'Booster' and self.ability.name:find('Celestial'))) and #find_joker('Astronomer') > 0 then self.cost = 0 end"
-position = "after"
-payload = '''
-if (self.ability.set == 'Spectral' or (self.ability.set == 'Booster' and self.ability.name:find('Spectral'))) and ((#find_joker('versatile_joker') > 0 and G.GAME.selected_back.name == 'Ghost Deck') or #find_joker('versatile_joker_all_in_one') > 0) then self.cost = 0 end
-'''
-
 # Joker on Joker stickers effects
 [[patches]]
 [patches.pattern]

@@ -515,20 +515,34 @@ return {
 				if context.before and not context.blueprint then
 					local hazZero = false
 					for i=1, #context.scoring_hand do
-						hazZero = hazZero or SMODS.is_zero(context.scoring_hand[i])
+						hazZero = hazZero or Showdown.is_zero(context.scoring_hand[i])
 					end
 					local enhancements = {}
-					for _, _card in ipairs(G.hand.cards) do
-						if (_card.config.center ~= G.P_CENTERS.c_base and (hazZero and _card.config.center ~= G.P_CENTERS.m_wild or not hazZero)) and findInTable(_card.config.center, enhancements) == -1 then
-							table.insert(enhancements, _card.config.center)
+					for _, v in ipairs(G.hand.cards) do
+						if (not SMODS.has_enhancement(v, 'c_base') and (hazZero and not SMODS.has_enhancement(v, 'm_wild') or not hazZero)) and findInTable(v.config.center, enhancements) == -1 then
+							table.insert(enhancements, v.config.center)
 						end
 					end
 					if #enhancements > 0 then
-						for i=1, #context.scoring_hand do
-							local _card = context.scoring_hand[i]
-							if _card.config.center == G.P_CENTERS.c_base and SMODS.is_counterpart(_card) and not _card.debuff then
-								_card:set_ability(pseudorandom_element(enhancements, pseudoseed('versatile_mirror')), nil, true)
+						local couterparts = {}
+						for _, v in ipairs(context.scoring_hand) do
+							if Showdown.is_counterpart(v) and SMODS.has_enhancement(v, 'c_base') then
+								couterparts[#couterparts+1] = v
+								v:set_ability(pseudorandom_element(enhancements, pseudoseed('versatile_mirror')), nil, true)
+								G.E_MANAGER:add_event(Event({
+									func = function()
+										v:juice_up()
+										return true
+									end
+								}))
 							end
+						end
+						if #couterparts > 0 then
+							return {
+								message = localize('k_enhanced'),
+								colour = G.C.COUNTERPART_RANKS,
+								card = card
+							}
 						end
 					end
 				end

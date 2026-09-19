@@ -65,7 +65,7 @@ local constant = {
 		local cen_pool_zero = getEnhancements({"m_wild"})
 		for i=1, #toEnhance do
             event({trigger = 'after', delay = 0.1, func = function()
-				toEnhance[i]:set_ability(pseudorandom_element(SMODS.is_zero(toEnhance[i]) and cen_pool_zero or cen_pool, pseudoseed('spe_card')), true)
+				toEnhance[i]:set_ability(pseudorandom_element(Showdown.is_zero(toEnhance[i]) and cen_pool_zero or cen_pool, pseudoseed('spe_card')), true)
             return true end })
         end
 		for i=1, #toEnhance do unflipCard(toEnhance[i], i, #toEnhance) end
@@ -129,7 +129,7 @@ local func = {
 		local cen_pool_zero = getEnhancements({"m_wild"})
 		for _, _card in pairs(cards) do
             event({trigger = 'after', delay = 0.1, func = function()
-				_card:set_ability(pseudorandom_element(SMODS.is_zero(_card) and cen_pool_zero or cen_pool, pseudoseed('showdown_mathematic')), true);
+				_card:set_ability(pseudorandom_element(Showdown.is_zero(_card) and cen_pool_zero or cen_pool, pseudoseed('showdown_mathematic')), true);
             return true end })
         end
 		for i, _card in ipairs(cards) do unflipCard(_card, i, #cards) end
