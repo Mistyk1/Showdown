@@ -665,6 +665,8 @@ local fruit_sticker = {
     name = 'fruit_sticker',
     atlas = "showdown_jokers",
     pos = coordinate(23),
+    display_size = { w = 35, h = 30 },
+    pixel_size = { w = 35, h = 30 },
     config = {extra = {x_mult = 1.75}},
     loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.x_mult } }
@@ -1820,7 +1822,7 @@ local whatever = {
         return { vars = { G.GAME.last_played_hand or localize('k_none') } }
 	end,
     rarity = 2, cost = 6,
-    blueprint_compat = true, perishable_compat = true, eternal_compat = true,
+    blueprint_compat = false, perishable_compat = true, eternal_compat = true,
     unlocked = false,
     check_for_unlock = function(self, args)
         if args.type == 'upgrade_hand' and not SMODS.PokerHand.obj_table[args.hand].visible and args.level >= 15 then
@@ -3332,7 +3334,7 @@ local gummy_worms = {
         return { vars = { card.ability.extra.x_chips, card.ability.extra.x_chips_reduction } }
 	end,
     rarity = 2, cost = 6,
-    blueprint_compat = false, perishable_compat = false, eternal_compat = false,
+    blueprint_compat = true, perishable_compat = false, eternal_compat = false,
     calculate = function(self, card, context)
         if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
             if card.ability.extra.x_chips - card.ability.extra.x_chips_reduction > 1.001 then
@@ -3402,7 +3404,7 @@ local abominationn = {
     key = 'abominationn',
     name = 'abominationn',
     atlas = "showdown_jokers",
-    pos = coordinate(103), soul_pos = coordinate(104),
+    pos = coordinate(101), soul_pos = coordinate(103),
     config = {extra = { blind_requirement_division = 2 }},
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.blind_requirement_division } }
@@ -3431,7 +3433,7 @@ local mutant = {
     key = 'mutant',
     name = 'mutant',
     atlas = "showdown_jokers",
-    pos = coordinate(105), soul_pos = coordinate(106),
+    pos = coordinate(101), soul_pos = coordinate(104),
     rarity = 4, cost = 10,
     unlocked = false,
     blueprint_compat = false, perishable_compat = true, eternal_compat = true,

@@ -2862,6 +2862,13 @@ return {
                     "into a {C:attention}Cursed Card{}"
                 }
             },
+            c_showdown_rot_guard = {
+                name = 'The Guard!',
+                text = {
+                    "Enhances {C:attention}#1#{} selected card",
+                    "into a {C:attention}Taped Card{}"
+                }
+            },
             c_showdown_rot_beast = {
                 name = 'The Beast!',
                 text = {
