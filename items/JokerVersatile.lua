@@ -14,6 +14,7 @@ local versatile_joker = {
         hearts = 20, spades = 1.5, spades_odd = 2,    -- Checkered Deck
         generate_odd = 4,                            -- Zodiac Deck
         double_tag = 1,                              -- Anaglyph Deck
+        extra_balancing = 25,                        -- Plasma Deck
         extra_card = 1,                             -- Cheater Deck
         tag_switch_mult = 1.5,                        -- Engineer Deck
         vouchers_booster_sale = 25,                  -- Slotted Deck
@@ -39,6 +40,8 @@ local versatile_joker = {
                 loc.vars = { G.GAME.probabilities.normal, card.ability.extra.generate_odd }
             elseif G.GAME.selected_back.name == 'Anaglyph Deck' then
                 loc.vars = { card.ability.extra.double_tag }
+            elseif G.GAME.selected_back.name == 'Plasma Deck' then
+                loc.vars = { card.ability.extra.extra_balancing }
             elseif G.GAME.selected_back.name == 'Cheater Deck' then
                 loc.vars = { card.ability.extra.extra_card }
             elseif G.GAME.selected_back.name == 'Engineer Deck' then
@@ -108,6 +111,7 @@ local versatile_joker_all_in_one = {
         hearts = 20, spades = 1.5, spades_odd = 2,    -- Checkered Deck
         generate_odd = 4,                            -- Zodiac Deck
         double_tag = 1,                              -- Anaglyph Deck
+        extra_balancing = 25,                        -- Plasma Deck
         extra_card = 1,                              -- Cheater Deck
         tag_switch_mult = 4,                         -- Engineer Deck
         vouchers_booster_sale = 25,                  -- Slotted Deck
@@ -129,6 +133,7 @@ local versatile_joker_all_in_one = {
             card.ability.extra.hearts, card.ability.extra.spades, G.GAME.probabilities.normal, card.ability.extra.spades_odd,
             G.GAME.probabilities.normal, card.ability.extra.generate_odd,
             card.ability.extra.double_tag,
+            card.ability.extra.extra_balancing,
             card.ability.extra.extra_card,
             card.ability.extra.tag_switch_mult,
             card.ability.extra.vouchers_booster_sale,

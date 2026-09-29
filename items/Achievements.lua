@@ -95,12 +95,11 @@ return {
 	},
 	exec = function ()
 		function Showdown.versatility_description(ach)
-			--[[
 			if not G.PROFILES[G.SETTINGS.profile].versatility then G.PROFILES[G.SETTINGS.profile].versatility = {} end
 			local no_versatile_deck = {}
 			local decks = {}
 			for k, v in pairs(G.P_CENTERS) do
-				if v.set == 'Back' and findInTable(v.name, G.PROFILES[G.SETTINGS.profile].versatility) == -1 then
+				if v.set == 'Back' and findInTable(k, G.PROFILES[G.SETTINGS.profile].versatility) == -1 then
 					decks[k] = v
 				end
 			end
@@ -110,10 +109,11 @@ return {
 			for k, v in pairs(decks) do
 				if v.unlocked then
 					table.insert(no_versatile_deck, {
-						--type = 'name_text',
 						type = 'name',
 						set = 'Back',
-						key = k
+						key = k,
+						--no_shadow = true,
+						--text_color = G.C.BLACK,
 					})
 				else
 					table.insert(no_versatile_deck, {
@@ -122,7 +122,7 @@ return {
 					})
 				end
 			end
-			]]--
+			
 			ach.config.speech_bubble_align = {align='tm', offset = {x=0,y=0},parent = ach}
 			ach.children.speech_bubble = UIBox{
 				--definition = Showdown.speech_bubble('versatility_desc', 'quips', nil, true, no_versatile_deck),

@@ -155,10 +155,10 @@ return {
                 row[#row+1] = {n=G.UIT.R, config={align = align_text and 'cm' or "cl"}, nodes = v}
             end
             local t = {n = G.UIT.ROOT, config = {align = "cm", minh = 0, r = 0.3, padding = 0.07, minw = 1, colour = G.C.JOKER_GREY, shadow = true}, nodes={
-                          {n = G.UIT.C, config = {align = "cm", minh = 0, r = 0.2, padding = 0.1, minw = 1, colour = G.C.WHITE}, nodes = {
-                            {n = G.UIT.C, config = {align = "cm", minh = 0, r = 0.2, padding = 0.03, minw = 1, colour = G.C.WHITE}, nodes = row}}
-                          }
-                        }}
+                {n = G.UIT.C, config = {align = "cm", minh = 0, r = 0.2, padding = 0.1, minw = 1, colour = G.C.WHITE}, nodes = {
+                    {n = G.UIT.C, config = {align = "cm", minh = 0, r = 0.2, padding = 0.03, minw = 1, colour = G.C.WHITE}, nodes = row}}
+                }
+            }}
             return t
         end
         

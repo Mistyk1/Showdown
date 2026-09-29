@@ -315,30 +315,22 @@ for i = 1, #G.jokers.cards do
 end
 '''
 
-# Versatile Joker (Plasma Deck), part 1/2
+# Versatile Joker (Plasma Deck)
 [[patches]]
 [patches.pattern]
 target = "back.lua"
 match_indent = true
 pattern = "local tot = args.chips + args.mult"
-position = "before"
+position = "at"
 payload = '''
-if (next(find_joker('versatile_joker')) or next(find_joker('versatile_joker_all_in_one'))) and G.GAME.selected_back.name == 'Plasma Deck' then
-    local tot = args.chips + args.mult
-    args.chips = args.chips + math.floor(tot/4)
-    args.mult = args.mult + math.floor(tot/4)
-else
-'''
-
-# Versatile Joker (Plasma Deck), part 2/2
-[[patches]]
-[patches.pattern]
-target = "back.lua"
-match_indent = true
-pattern = "update_hand_text({delay = 0}, {mult = args.mult, chips = args.chips})"
-position = "before"
-payload = '''
+local extra_balancing = 0
+for _, v in ipairs(find_joker('versatile_joker')) do
+    extra_balancing = extra_balancing + v.ability.extra.extra_balancing
 end
+for _, v in ipairs(find_joker('versatile_joker_all_in_one')) do
+    extra_balancing = extra_balancing + v.ability.extra.extra_balancing
+end
+local tot = args.chips + math.floor(args.chips * (0.01 * extra_balancing)) + args.mult + math.floor(args.mult * (0.01 * extra_balancing))
 '''
 
 # Versatile Joker (Starter Deck)
